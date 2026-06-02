@@ -1,0 +1,15 @@
+dataset:
+  _target_: lewm.data.lerobot_adapter.LeRobotWMDataset
+  repo_id: lerobot/svla_so100_pickplace
+  root: null
+  image_key: observation.images.top
+  proprio_key: observation.state
+  action_key: action
+  state_key: null
+  frameskip: 5
+  num_steps: ${eval:'${wm.num_preds} + ${wm.history_size}'}
+  return_uint8: true
+  keys_to_load:
+    - pixels
+    - action
+    - proprio

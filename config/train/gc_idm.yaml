@@ -1,0 +1,46 @@
+# Stage 2: GC-IDM training config
+# Usage: python train_gc_idm.py world_model_path=<path/to/lewm_epoch_N_object.ckpt>
+
+# Path to the Stage 1 JEPA checkpoint (pickled object or .safetensors)
+world_model_path: ???
+
+seed: 3072
+steps: 50000
+batch_size: 256
+max_horizon: 50     # H_max: sample horizons h ~ Uniform[1, max_horizon]
+
+data:
+  dataset:
+    repo_id: maelicneau/stack_cubes
+    root: /home/maelicneau/Documents/tmp/leWorldRobot/datasets/stack_cubes
+    image_key: observation.images.up
+    image_key2: observation.images.side
+    image_keys:
+      - observation.images.up
+      - observation.images.side
+    frameskip: 5
+
+# World model architecture — must match Stage 1 training
+wm:
+  encoder_scale: tiny
+  patch_size: 14
+  img_size: 224
+  embed_dim: 192
+  history_size: 3
+  action_dim: 6
+  frameskip: 5
+  predictor:
+    depth: 6
+    heads: 16
+    mlp_dim: 2048
+    dim_head: 64
+    dropout: 0.1
+    emb_dropout: 0.0
+
+gc_idm:
+  hidden_dim: 512
+  horizon_dim: 64
+
+optimizer:
+  lr: 1e-4
+  weight_decay: 1e-4

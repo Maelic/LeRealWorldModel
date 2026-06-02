@@ -1,0 +1,62 @@
+[project]
+name = "leworldrobot"
+version = "0.1.0"
+description = "Train and deploy JEPA-style latent world models on LeRobot-format datasets and real robots (SO-100)."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { file = "LICENSE" }
+authors = [{ name = "Maelic Neau" }]
+keywords = ["world-model", "jepa", "robotics", "lerobot", "so-100", "mpc"]
+
+dependencies = [
+    # Core
+    "torch>=2.4",
+    "torchvision>=0.19",
+    "transformers>=4.40",
+    "einops>=0.8",
+    "numpy",
+    "pillow",
+    "tqdm",
+
+    # Training stack
+    "hydra-core>=1.3",
+    "omegaconf>=2.3",
+    "lightning>=2.4",
+    "pytorch-lightning>=2.4",
+    "wandb",
+
+    # le-wm dependencies (HDF5 dataset, image preprocessor, callbacks)
+    "stable-worldmodel>=0.0.6",
+    "stable-pretraining",
+    "hdf5plugin",
+    "h5py",
+
+    # LeRobot dataset + robot stack
+    "lerobot[dataset]>=0.5.1",
+    "safetensors>=0.4",
+
+    # Evaluation (identifiability + decoder probes)
+    "scikit-learn>=1.3",
+    "scipy>=1.11",
+    "matplotlib",
+]
+
+[project.optional-dependencies]
+dev = ["ruff", "ipython"]
+
+[project.urls]
+Repository = "https://github.com/Maelic/leworldrobot"
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+# Top-level scripts (jepa.py, module.py, utils.py, train*.py, identifiability.py,
+# action_diversity.py, run_identifiability_*.py) are entry-point modules executed
+# from the repo root, not part of the installable package. Only ``lewm`` (the
+# LeRobot integration) is shipped as a package.
+packages = [
+    "lewm", "lewm.data", "lewm.planning", "lewm.policies", "lewm.policies.wm_planning",
+    "lewm_robot", "lewm_robot.policies", "lewm_robot.policies.jepa",
+]
