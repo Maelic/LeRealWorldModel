@@ -1,4 +1,4 @@
-# leworldrobot
+# LeRealWorldModel
 
 Train a **JEPA-style latent world model** ([le-wm](https://github.com/rbalestr-lab/lewm)) directly on a
 [LeRobot](https://github.com/huggingface/lerobot) dataset, then deploy it on a
