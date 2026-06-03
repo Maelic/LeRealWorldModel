@@ -17,7 +17,6 @@ The script:
 from __future__ import annotations
 
 import sys
-from functools import partial
 from pathlib import Path
 
 import hydra
@@ -55,13 +54,18 @@ def precompute_embeddings(
     image_keys: list[str],
     img_preprocessors: dict,
     batch_size: int = 64,
+    num_workers: int = 4,
 ) -> list[torch.Tensor]:
     """Encode every frame in every episode with the frozen encoder.
 
     Returns a list of (N_frames_ep, D) tensors, one per episode.
-    This is done once and cached to avoid redundant encoder passes during training.
+    Uses a DataLoader over the underlying LeRobotDataset for efficient
+    sequential video decoding (avoids per-frame seek overhead).
     """
+    from torch.utils.data import DataLoader, Subset
+
     world_model.eval()
+    lerobot_ds = dataset._lerobot
     n_episodes = len(dataset.lengths)
     emb_cache: list[torch.Tensor] = []
 
@@ -69,28 +73,25 @@ def precompute_embeddings(
     for ep_idx in tqdm(range(n_episodes)):
         ep_len = int(dataset.lengths[ep_idx])
         ep_offset = int(dataset.offsets[ep_idx])
+
+        # One DataLoader per episode → sequential decode, no random seeks
+        subset = Subset(lerobot_ds, range(ep_offset, ep_offset + ep_len))
+        loader = DataLoader(
+            subset,
+            batch_size=batch_size,
+            num_workers=num_workers,
+            shuffle=False,
+            pin_memory=True,
+        )
+
         ep_embs: list[torch.Tensor] = []
-
-        for batch_start in range(0, ep_len, batch_size):
-            batch_end = min(batch_start + batch_size, ep_len)
-            frames_batch: dict[str, list[torch.Tensor]] = {k: [] for k in image_keys}
-
-            for t in range(batch_start, batch_end):
-                global_idx = ep_offset + t
-                row = dataset.get_row_data(global_idx)
-                # Video frames are not in the parquet; decode via _load_slice trick
-                # Use a 1-frame slice to pull a single video frame.
-                clip = dataset._load_slice(ep_idx, t, t + 1)
-                for slot_idx, key in enumerate(image_keys):
-                    slot = "pixels" if slot_idx == 0 else "pixels2"
-                    frames_batch[key].append(clip[slot][0])  # (1, C, H, W) → drop T
-
-            # Preprocess and encode the batch
+        for batch in loader:
             info: dict[str, torch.Tensor] = {}
             for slot_idx, key in enumerate(image_keys):
-                frames = torch.cat(frames_batch[key], dim=0)    # (B, C, H, W)
-                pre = img_preprocessors[key]({"pixels": frames})["pixels"]
-                pre = pre.to(device)
+                frames = batch[key]             # (B, C, H, W), float [0,1]
+                if frames.is_floating_point():
+                    frames = (frames * 255.0).clamp(0, 255).to(torch.uint8)
+                pre = img_preprocessors[key]({"pixels": frames})["pixels"].to(device)
                 slot = "pixels" if slot_idx == 0 else "pixels2"
                 info[slot] = pre.unsqueeze(1)   # (B, 1, C, H, W)
 
@@ -169,13 +170,14 @@ def run(cfg) -> None:
     )
 
     # ── Pre-compute embeddings ────────────────────────────────────────────────
-    emb_cache = precompute_embeddings(
+    emb_cache_cpu = precompute_embeddings(
         world_model, dataset, device, image_keys, img_preprocessors
     )
 
     # Pre-load all actions too (already in RAM via parquet)
     n_episodes = len(dataset.lengths)
-    action_cache: list[torch.Tensor] = []
+    action_cache_cpu: list[torch.Tensor] = []
+    print("Loading action cache...")
     for ep_idx in range(n_episodes):
         ep_len = int(dataset.lengths[ep_idx])
         ep_offset = int(dataset.offsets[ep_idx])
@@ -183,7 +185,7 @@ def run(cfg) -> None:
             range(ep_offset, ep_offset + ep_len)
         )
         acts = torch.stack([torch.as_tensor(a) for a in rows["action"]])  # (ep_len, A)
-        action_cache.append(acts)
+        action_cache_cpu.append(acts)
 
     # Load normalizer stats to train in normalised action space
     action_mean = torch.zeros(jepa_cfg.action_dim)
@@ -198,6 +200,15 @@ def run(cfg) -> None:
 
     action_mean = action_mean.to(device)
     action_std = action_std.to(device)
+
+    # Move caches to GPU once — avoids 256 individual .to(device) calls per step
+    print("Moving caches to GPU...")
+    emb_cache = [e.to(device) for e in emb_cache_cpu]
+    action_cache = [
+        ((a.to(device) - action_mean) / action_std) for a in action_cache_cpu
+    ]
+    del emb_cache_cpu, action_cache_cpu
+    print(f"Caches on GPU. Starting {cfg.steps} training steps...", flush=True)
 
     # ── GC-IDM ───────────────────────────────────────────────────────────────
     gc_idm = GCIDM(
@@ -236,17 +247,15 @@ def run(cfg) -> None:
             t = torch.randint(0, ep_len - 1, (1,), generator=rng).item()
             h = torch.randint(1, min(max_h, ep_len - t), (1,), generator=rng).item()
 
-            z_ts.append(emb_cache[ep][t])
+            z_ts.append(emb_cache[ep][t])       # already on GPU
             z_goals.append(emb_cache[ep][t + h])
             horizons.append(h)
-            # Normalise action
-            raw_action = action_cache[ep][t].to(device)
-            a_targets.append((raw_action - action_mean) / action_std)
+            a_targets.append(action_cache[ep][t])  # already normalised + on GPU
 
-        z_t = torch.stack(z_ts).to(device)                     # (B, D)
-        z_goal = torch.stack(z_goals).to(device)               # (B, D)
+        z_t = torch.stack(z_ts)                                 # (B, D) — on GPU
+        z_goal = torch.stack(z_goals)                           # (B, D) — on GPU
         h_tensor = torch.tensor(horizons, device=device, dtype=torch.long)  # (B,)
-        a_target = torch.stack(a_targets).to(device)           # (B, A)
+        a_target = torch.stack(a_targets)                       # (B, A) — on GPU
 
         a_pred = gc_idm(z_t, z_goal, h_tensor)
         loss = F.mse_loss(a_pred, a_target)
@@ -260,13 +269,13 @@ def run(cfg) -> None:
         running_loss += loss.item()
         if (step + 1) % log_interval == 0:
             avg = running_loss / log_interval
-            print(f"[{step+1:>6}/{cfg.steps}] loss={avg:.5f}  lr={scheduler.get_last_lr()[0]:.2e}")
+            print(f"[{step+1:>6}/{cfg.steps}] loss={avg:.5f}  lr={scheduler.get_last_lr()[0]:.2e}", flush=True)
             running_loss = 0.0
 
     # ── Save ─────────────────────────────────────────────────────────────────
     out_path = wm_path.parent / "gc_idm.pt"
     torch.save(gc_idm.state_dict(), out_path)
-    print(f"Saved GC-IDM → {out_path}")
+    print(f"Saved GC-IDM → {out_path}", flush=True)
 
 
 if __name__ == "__main__":

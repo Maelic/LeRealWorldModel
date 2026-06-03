@@ -123,18 +123,19 @@ def obs_to_batch(obs: dict, device: torch.device) -> dict[str, torch.Tensor]:
 # Goal capture
 # ──────────────────────────────────────────────────────────────────────────────
 
-def capture_goal_interactive(robot, save_path: Path) -> dict[str, torch.Tensor]:
+def capture_goal_interactive(robot, save_path: Path, image_keys: list[str]) -> dict[str, torch.Tensor]:
     """Move robot to goal pose manually, then press Enter to capture."""
     print("\n[Goal capture] Move the arm to the desired GOAL configuration.")
-    input("  Press Enter to capture goal images from both cameras... ")
+    input("  Press Enter to capture goal image(s)... ")
 
     obs = robot.get_observation()
     goal_images = {}
-    for cam_name, policy_key in [("up", "observation.images.up"), ("side", "observation.images.side")]:
+    cam_map = {"observation.images.up": "up", "observation.images.side": "side"}
+    for policy_key in image_keys:
+        cam_name = cam_map.get(policy_key, policy_key.split(".")[-1])
         frame = obs[cam_name]
         chw = torch.from_numpy(frame.copy()).permute(2, 0, 1).contiguous()
         goal_images[policy_key] = chw
-
         img_path = save_path.parent / f"goal_{cam_name}.jpg"
         Image.fromarray(frame).save(img_path)
         logger.info("Saved goal image: %s", img_path)
@@ -160,7 +161,7 @@ class DatasetReplay:
     def __init__(self, repo_id: str, root: str | None, max_steps: int):
         from lerobot.datasets.lerobot_dataset import LeRobotDataset
         root_path = Path(root).expanduser() if root else None
-        self._ds = LeRobotDataset(repo_id=repo_id, root=root_path, return_uint8=True)
+        self._ds = LeRobotDataset(repo_id=repo_id, root=root_path)
         self._idx = 0
         self._max = min(max_steps, len(self._ds))
         logger.info("Dry-run: replaying %d steps from %s", self._max, repo_id)
@@ -171,11 +172,13 @@ class DatasetReplay:
         for k in ("observation.images.up", "observation.images.side"):
             if k in item:
                 frame = item[k]
-                if torch.is_tensor(frame) and frame.ndim == 3:
-                    if frame.shape[-1] == 3:            # HWC → CHW
-                        obs[k.split(".")[-1]] = frame.permute(2, 0, 1).contiguous()
-                    else:
-                        obs[k.split(".")[-1]] = frame   # already CHW
+                # Real hardware returns (H, W, C) uint8 numpy — match that interface.
+                if torch.is_tensor(frame):
+                    if frame.ndim == 3 and frame.shape[0] == 3:  # CHW → HWC numpy
+                        frame = (frame.permute(1, 2, 0).numpy() * 255).clip(0, 255).astype(np.uint8)
+                    elif frame.ndim == 3 and frame.shape[-1] == 3:  # already HWC
+                        frame = (frame.numpy() * 255).clip(0, 255).astype(np.uint8)
+                obs[k.split(".")[-1]] = frame
         state = item.get("observation.state")
         if state is not None:
             for i, m in enumerate(MOTOR_NAMES):
@@ -204,7 +207,7 @@ def deploy(args: argparse.Namespace) -> None:
         world_model_path=args.world_model_path,
         gc_idm_path=args.gc_idm_path,
         normalizers_path=args.normalizers_path,
-        image_keys=["observation.images.up", "observation.images.side"],
+        image_keys=args.image_keys,
         encoder_scale=args.encoder_scale,
         embed_dim=args.embed_dim,
         history_size=args.history_size,
@@ -232,7 +235,7 @@ def deploy(args: argparse.Namespace) -> None:
         # ── Set goal ────────────────────────────────────────────────────────
         if args.capture_goal and not args.dry_run_replay_from:
             goal_save = Path(args.goal_image) if args.goal_image else Path("goal.jpg")
-            goal_images = capture_goal_interactive(robot, goal_save)
+            goal_images = capture_goal_interactive(robot, goal_save, config.image_keys)
         elif args.goal_image:
             goal_images = load_goal_from_file(
                 Path(args.goal_image).expanduser(), config.image_keys
@@ -347,6 +350,13 @@ def build_parser() -> argparse.ArgumentParser:
     grp4.add_argument("--history-size", type=int, default=3)
     grp4.add_argument("--frameskip", type=int, default=5)
     grp4.add_argument("--max-horizon", type=int, default=50)
+    grp4.add_argument(
+        "--image-keys", nargs="+",
+        default=["observation.images.up"],
+        help="Camera keys to use (must match Stage 1 training). "
+             "Single-cam: observation.images.up  "
+             "Dual-cam: observation.images.up observation.images.side",
+    )
 
     # Loop
     grp5 = p.add_argument_group("Control loop")
