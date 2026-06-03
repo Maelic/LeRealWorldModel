@@ -200,7 +200,8 @@ def run(cfg):
     ##########################
 
     run_id = cfg.get("subdir") or ""
-    run_dir = Path(swm.data.utils.get_cache_dir(), run_id)
+    _repo_root = Path(__file__).resolve().parent
+    run_dir = Path(swm.data.utils.get_cache_dir(override_root=_repo_root / "checkpoints"), run_id)
 
     logger = None
     if cfg.wandb.enabled:

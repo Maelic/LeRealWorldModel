@@ -27,9 +27,9 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
 # Auto-detect the latest epoch checkpoint
-WM_CKPT=$(ls -t "$RUN_DIR"/lewm_so100_epoch_*_object.ckpt 2>/dev/null | head -1)
+WM_CKPT=$(ls -t "$RUN_DIR"/lewm_*_epoch_*_object.ckpt 2>/dev/null | head -1)
 if [[ -z "$WM_CKPT" ]]; then
-    echo "ERROR: No lewm_so100_epoch_*_object.ckpt found in $RUN_DIR"
+    echo "ERROR: No lewm_*_epoch_*_object.ckpt found in $RUN_DIR"
     exit 1
 fi
 

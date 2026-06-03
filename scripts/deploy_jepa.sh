@@ -21,16 +21,23 @@
 #       --dry-run-replay-root ./datasets/stack_cubes
 set -euo pipefail
 
-if [[ $# -lt 1 ]]; then
-    echo "Usage: $0 <run_dir> [--capture-goal | --goal-image <path>] [args...]"
-    exit 1
-fi
-
-RUN_DIR="${1%/}"
-shift
-
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
+
+# First positional arg is run_dir if it doesn't start with '--'
+if [[ $# -gt 0 && "${1}" != --* ]]; then
+    RUN_DIR="${1%/}"
+    shift
+else
+    # Default: auto-detect newest subdirectory under ./checkpoints/
+    RUN_DIR=$(ls -td "$REPO_ROOT"/checkpoints/*/ 2>/dev/null | head -1)
+    if [[ -z "$RUN_DIR" ]]; then
+        echo "ERROR: No run_dir given and no subdirectory found under checkpoints/"
+        echo "Usage: $0 [run_dir] [--capture-goal | --goal-image <path>] [args...]"
+        exit 1
+    fi
+    echo "Auto-selected run_dir: $RUN_DIR"
+fi
 
 # ── Configurable hardware defaults ───────────────────────────────────────────
 PORT="${PORT:-/dev/ttyACM0}"
@@ -41,10 +48,10 @@ MAX_STEPS="${MAX_STEPS:-300}"
 MAX_RELATIVE_TARGET="${MAX_RELATIVE_TARGET:-}"   # leave empty to use robot default
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Auto-detect latest checkpoint
-WM_CKPT=$(ls -t "$RUN_DIR"/lewm_so100_epoch_*_object.ckpt 2>/dev/null | head -1)
+# Auto-detect latest epoch checkpoint (any lewm_*_epoch_*_object.ckpt)
+WM_CKPT=$(ls -t "$RUN_DIR"/lewm_*_epoch_*_object.ckpt 2>/dev/null | head -1)
 if [[ -z "$WM_CKPT" ]]; then
-    echo "ERROR: No lewm_so100_epoch_*_object.ckpt in $RUN_DIR"
+    echo "ERROR: No lewm_*_epoch_*_object.ckpt found in $RUN_DIR"
     exit 1
 fi
 
