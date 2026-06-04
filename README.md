@@ -1,6 +1,9 @@
 # LeRealWorldModel
 
-[![Decoder reconstruction](figs/decoder_recon_preview.gif)](https://github.com/Maelic/LeRealWorldModel/raw/main/figs/decoder_recon_sidebyside.mp4)
+
+https://github.com/user-attachments/assets/a461122c-87b3-458b-b08d-c824ad036b90
+
+
 
 A **JEPA latent world model** + **GC-IDM amortized planner** for goal-conditioned
 manipulation on the [SO-100](https://github.com/TheRobotStudio/SO-ARM100) arm —
