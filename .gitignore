@@ -51,6 +51,7 @@ identifiability_*_results.txt
 goal*.png
 goal*.jpg
 *.gif
+!figs/*.gif
 tea_debug.log
 
 # Editors / OS
