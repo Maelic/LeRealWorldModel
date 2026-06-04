@@ -5,7 +5,7 @@
 A **JEPA latent world model** + **GC-IDM amortized planner** for goal-conditioned
 manipulation on the [SO-100](https://github.com/TheRobotStudio/SO-ARM100) arm —
 built directly on [LeRobot](https://github.com/huggingface/lerobot) and
-[stable-worldmodel](https://github.com/rbalestr-lab/lewm).
+[stable-worldmodel](https://github.com/galilai-group/stable-worldmodel).
 
 The clip above is a probe into what the model actually learns: every frame's
 192-d JEPA `CLS` token decoded back to pixels (left: ground truth, right:
@@ -30,9 +30,9 @@ Two planners are implemented:
 - **GC-IDM** (current, `lewm_robot/`) — a Goal-Conditioned Inverse Dynamics MLP
   that maps `(zₜ, z_goal, horizon) → action` in a single forward pass, replacing
   CEM/MPPI search for ~100× faster closed-loop control.
-- **Random-shooting / CEM MPC** (legacy, `lewm/`) — samples action chunks,
+- **Random-shooting / CEM MPC** (`lewm_robot/planning/`) — samples action chunks,
   rolls them out in latent space, and picks the chunk whose predicted latent is
-  closest to the goal.
+  closest to the goal. No extra training needed; useful as a baseline.
 
 ## How it works
 
@@ -108,11 +108,11 @@ Pre-computes all frozen-encoder embeddings, then trains by MSE (~20 min, single
 GPU). Writes `gc_idm.pt` next to the checkpoint.
 
 **Fallback — CEM planning (no Stage 2 required).** If you skip Stage 2, the
-legacy `lewm/` planner samples action chunks, rolls them out in latent space, and
-picks the chunk closest to the goal in embedding space:
+CEM planner samples action chunks, rolls them out in latent space, and picks the
+chunk closest to the goal in embedding space:
 
 ```bash
-python -m lewm.deploy_so100 \
+python -m lewm_robot.deploy_cem_so100 \
     --ckpt        checkpoints/so100_topcam/lewm_so100_topcam_epoch_50_object.ckpt \
     --normalizers checkpoints/so100_topcam/lewm_so100_topcam_normalizers.pt \
     --goal-image  ./goal.png \
@@ -207,12 +207,15 @@ benefits from Sentry / RTC strategies).
 │   ├── run_identifiability_so100.py   # identifiability eval runner (SO-100)
 │   └── train_decoder.py              # standalone pixel-decoder probe
 ├── figs/                              # README assets (GIF teaser, MP4 full-res)
-├── lewm_robot/                        # current package: JEPA + GC-IDM
-│   ├── policies/jepa/                 # JEPAConfig, JEPAPolicy, GCIDM, processor
-│   ├── decoder.py                     # JEPADecoder (MAE-style)
-│   ├── deploy_jepa_so100.py           # standalone closed-loop deploy
-│   └── rollout_jepa.py                # LeRobot-rollout integration
-└── lewm/                              # legacy CEM / random-shooting planner + deploy
+└── lewm_robot/                        # the package: JEPA + GC-IDM + CEM fallback
+    ├── data/lerobot_adapter.py        # LeRobotDataset → stable_worldmodel.Dataset
+    ├── planning/mpc.py                # RandomShootingPlanner, CEMPlanner
+    ├── policies/jepa/                 # JEPAConfig, JEPAPolicy, GCIDM, processor
+    ├── policies/wm_planning/          # CEM policy plugin for lerobot-rollout
+    ├── decoder.py                     # JEPADecoder (MAE-style)
+    ├── deploy_jepa_so100.py           # GC-IDM closed-loop deploy
+    ├── deploy_cem_so100.py            # CEM/random-shooting deploy (no Stage 2 needed)
+    └── rollout_jepa.py                # LeRobot-rollout integration
 ```
 
 ## Caveats before trusting hardware

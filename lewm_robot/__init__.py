@@ -7,3 +7,8 @@ LeRobot's source code.
 """
 
 from lewm_robot.policies.jepa.configuration_jepa import JEPAConfig  # noqa: F401
+
+# Re-export JEPA so pickled *_object.ckpt files (saved by ModelObjectCallBack)
+# can be deserialized after `import lewm_robot` without requiring the repo root
+# explicitly on sys.path.
+from jepa import JEPA  # noqa: F401

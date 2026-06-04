@@ -36,7 +36,7 @@ if str(_REPO_ROOT) not in sys.path:
 import stable_pretraining as spt  # noqa: F401
 
 from jepa import JEPA  # noqa: E402
-from lewm.data.lerobot_adapter import LeRobotWMDataset  # noqa: E402
+from lewm_robot.data.lerobot_adapter import LeRobotWMDataset  # noqa: E402
 from lewm_robot.decoder import JEPADecoder  # noqa: E402
 from lewm_robot.policies.jepa.configuration_jepa import JEPAConfig  # noqa: E402
 from lewm_robot.policies.jepa.modeling_gc_idm import GCIDM  # noqa: E402

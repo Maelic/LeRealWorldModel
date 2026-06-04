@@ -254,7 +254,7 @@ def get_lerobot_dataset(
     transform that handles the temporal batch dimension in-place so the decoder
     training loop receives the same ImageNet-normalized float tensors as training.
     """
-    from lewm.data.lerobot_adapter import LeRobotWMDataset
+    from lewm_robot.data.lerobot_adapter import LeRobotWMDataset
     from torchvision.transforms import v2 as Tv2
 
     _mean = torch.tensor([0.485, 0.456, 0.406])

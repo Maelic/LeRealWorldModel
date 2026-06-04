@@ -67,8 +67,3 @@ Thumbs.db
 # Session / agent artifacts
 .claude/
 
-# Legacy / superseded code (kept on disk for reference, not tracked)
-lewm/policies/
-lewm/planning/
-lewm/deploy_so100.py
-lewm/rollout_wm_planning.py
