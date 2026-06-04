@@ -214,6 +214,7 @@ def deploy(args: argparse.Namespace) -> None:
         action_dim=len(MOTOR_NAMES),
         frameskip=args.frameskip,
         max_horizon=args.max_horizon,
+        horizon_floor=args.horizon_floor,
         chunk_size=1,           # per-step closed-loop
         device=str(device),
     )
@@ -350,6 +351,10 @@ def build_parser() -> argparse.ArgumentParser:
     grp4.add_argument("--history-size", type=int, default=3)
     grp4.add_argument("--frameskip", type=int, default=5)
     grp4.add_argument("--max-horizon", type=int, default=50)
+    grp4.add_argument("--horizon-floor", type=int, default=1,
+                      help="Never let the deployment horizon decay below this. "
+                           "At h=1 GC-IDM means 'reach goal in one step' → aggressive. "
+                           "Set e.g. 10 to keep motions measured for the whole episode.")
     grp4.add_argument(
         "--image-keys", nargs="+",
         default=["observation.images.up"],

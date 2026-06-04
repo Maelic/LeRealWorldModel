@@ -12,7 +12,7 @@ max_horizon: 50
 data:
   dataset:
     repo_id: maelicneau/stack_cubes
-    root: /home/maelicneau/Documents/tmp/leWorldRobot/datasets/stack_cubes
+    root: leWorldRobot/datasets/stack_cubes
     image_key: observation.images.up
     image_key2: null
     image_keys:

@@ -77,6 +77,11 @@ class JEPAConfig(PreTrainedConfig):
     # chunk_size=1 → per-step closed-loop (sync engine).
     # chunk_size>1 → RTC engine with cached chunk between re-encodes.
     chunk_size: int = 1
+    # Horizon floor: never let the deployment horizon decay below this. At h=1
+    # GC-IDM is trained to mean "reach the goal in a single step" → a large,
+    # aggressive command. Holding a floor keeps motions measured for the whole
+    # episode instead of collapsing to a 1-step jump after `max_horizon` ticks.
+    horizon_floor: int = 1
 
     # ── LeRobot boilerplate ─────────────────────────────────────────────────
     normalization_mapping: dict[str, NormalizationMode] = field(

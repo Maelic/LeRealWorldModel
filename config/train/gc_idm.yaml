@@ -12,7 +12,7 @@ max_horizon: 50     # H_max: sample horizons h ~ Uniform[1, max_horizon]
 data:
   dataset:
     repo_id: maelicneau/stack_cubes
-    root: /home/maelicneau/Documents/tmp/leWorldRobot/datasets/stack_cubes
+    root: leWorldRobot/datasets/stack_cubes
     image_key: observation.images.up
     image_key2: observation.images.side
     image_keys:

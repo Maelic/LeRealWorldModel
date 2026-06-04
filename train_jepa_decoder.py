@@ -51,8 +51,9 @@ from utils import get_img_preprocessor  # noqa: E402
 class ZImageDataset(Dataset):
     """Pairs pre-computed CLS embeddings with their source images.
 
-    Images are loaded on-the-fly from ``lerobot_ds`` and resized to
-    ``img_size × img_size`` (same view that the ViT encoder saw).
+    Images are loaded on-the-fly from ``lerobot_ds`` and resized to the
+    decoder output resolution ``out_h × out_w``.  The encoder always sees
+    ``img_size × img_size`` (handled separately by the preprocessor).
     """
 
     def __init__(
@@ -60,14 +61,15 @@ class ZImageDataset(Dataset):
         emb_flat: torch.Tensor,    # (N, D) on CPU
         lerobot_ds,
         image_key: str,
-        img_size: int = 224,
+        out_h: int = 240,
+        out_w: int = 320,
     ) -> None:
         assert len(emb_flat) == len(lerobot_ds)
         self.emb_flat = emb_flat
         self.lerobot_ds = lerobot_ds
         self.image_key = image_key
         self.resize = transforms.Compose([
-            transforms.Resize((img_size, img_size), antialias=True),
+            transforms.Resize((out_h, out_w), antialias=True),
         ])
 
     def __len__(self) -> int:
@@ -84,7 +86,7 @@ class ZImageDataset(Dataset):
 # Embedding pre-computation (reused from train_gc_idm pattern)
 # ──────────────────────────────────────────────────────────────────────────────
 
-@torch.no_grad()
+@torch.inference_mode()
 def precompute_embeddings_flat(
     world_model: JEPA,
     lerobot_ds,
@@ -105,7 +107,7 @@ def precompute_embeddings_flat(
         pin_memory=True,
     )
     embs: list[torch.Tensor] = []
-    print(f"Pre-computing embeddings for {N} frames…")
+    print(f"Pre-computing embeddings for {N} frames…", flush=True)
     for batch in tqdm(loader):
         frames = batch[image_key]                              # (B, C, H, W) float
         if frames.is_floating_point():
@@ -121,6 +123,19 @@ def precompute_embeddings_flat(
 # Rollout visualization
 # ──────────────────────────────────────────────────────────────────────────────
 
+def _load_action_chunk(lerobot_ds, base_idx: int, frameskip: int, ep_end: int) -> torch.Tensor:
+    """Load ``frameskip`` consecutive native actions starting at ``base_idx``.
+
+    Returns a (frameskip * action_dim,) tensor — the 30-dim stacked action the
+    world model expects.  Pads with the last available action if near episode end.
+    """
+    parts = []
+    for k in range(frameskip):
+        idx = min(base_idx + k, ep_end - 1)
+        parts.append(torch.as_tensor(lerobot_ds[idx]["action"], dtype=torch.float32))
+    return torch.cat(parts)   # (frameskip * action_dim,)
+
+
 @torch.no_grad()
 def rollout_episode(
     world_model: JEPA,
@@ -133,76 +148,78 @@ def rollout_episode(
     ep_len: int,
     history_size: int = 3,
     n_rollout: int = 8,
+    frameskip: int = 5,
+    out_h: int = 240,
+    out_w: int = 320,
 ) -> dict[str, torch.Tensor]:
     """Encode history, roll out predictor, decode all embeddings.
 
     Returns dict with keys:
-        gt_imgs       (T, 3, 224, 224)  — ground truth frames
-        enc_imgs      (T, 3, 224, 224)  — decoded from encoder z
-        pred_imgs     (n_rollout, 3, 224, 224)  — decoded from predictor z
+        gt_imgs   (T, 3, out_h, out_w)        — ground truth frames
+        enc_imgs  (T, 3, out_h, out_w)        — decoded from encoder z
+        pred_imgs (n_rollout, 3, out_h, out_w) — decoded from predictor z
     where T = history_size + n_rollout.
     """
     world_model.eval()
     decoder.eval()
     T = history_size + n_rollout
+    ep_end = ep_start + ep_len
 
-    # Load T frames + actions starting from ep_start
-    resize = transforms.Resize((224, 224), antialias=True)
+    # Frames and actions at every frameskip-th native index
+    resize = transforms.Resize((out_h, out_w), antialias=True)
     raw_frames, gt_imgs, actions = [], [], []
     for i in range(T):
-        idx = ep_start + i
-        sample = lerobot_ds[idx]
-        img = sample[image_key]           # (C, H, W) float
+        native_idx = ep_start + i * frameskip
+        sample = lerobot_ds[native_idx]
+        img = sample[image_key]                        # (C, H, W) float
         gt_imgs.append(resize(img))
         frames_u8 = (img * 255).clamp(0, 255).to(torch.uint8)
-        pre = img_preprocessor({"pixels": frames_u8.unsqueeze(0)})["pixels"]  # (1,C,H,W)
+        pre = img_preprocessor({"pixels": frames_u8.unsqueeze(0)})["pixels"]
         raw_frames.append(pre)
-        actions.append(torch.as_tensor(sample["action"], dtype=torch.float32))
+        # 30-dim stacked action chunk (frameskip × action_dim)
+        actions.append(_load_action_chunk(lerobot_ds, native_idx, frameskip, ep_end))
 
-    gt_imgs = torch.stack(gt_imgs)        # (T, 3, 224, 224)
-    frames_pre = torch.stack(raw_frames)  # (T, 1, C, 224, 224) → need (1, T, C, H, W)
-    frames_pre = frames_pre[:, 0].unsqueeze(0).to(device)  # (1, T, C, H, W)
-    actions_t = torch.stack(actions).to(device)            # (T, A)
+    gt_imgs    = torch.stack(gt_imgs)                                      # (T, 3, H, W)
+    frames_pre = torch.stack(raw_frames)[:, 0].unsqueeze(0).to(device)    # (1, T, C, H, W)
+    actions_t  = torch.stack(actions).to(device)                           # (T, 30)
 
-    # Encode all T frames individually for ground truth enc_imgs
+    # Encode all T frames individually for ground-truth enc_imgs
     enc_embs: list[torch.Tensor] = []
     for t in range(T):
-        z = world_model.encode({"pixels": frames_pre[:, t:t+1]})["emb"][:, 0]  # (1, D)
+        z = world_model.encode({"pixels": frames_pre[:, t:t+1]})["emb"][:, 0]
         enc_embs.append(z)
     enc_embs_t = torch.cat(enc_embs, dim=0)  # (T, D)
 
-    # Encode history context (with delta actions) for rollout
-    hist_frames = frames_pre[:, :history_size]                        # (1, H, C, H, W)
-    hist_acts = actions_t[:history_size].unsqueeze(0)                  # (1, H, A)
-    # delta actions: act[t] - act[t-1], with act[-1]=0 at episode start
+    # Encode history with delta actions (act[t] - act[t-1]; act[-1]=0)
+    hist_frames = frames_pre[:, :history_size]
+    hist_acts   = actions_t[:history_size].unsqueeze(0)                    # (1, H, 30)
     prev = torch.cat([torch.zeros(1, 1, hist_acts.shape[-1], device=device),
                       hist_acts[:, :-1]], dim=1)
-    delta_hist = hist_acts - prev                                       # (1, H, A)
-    info = world_model.encode({"pixels": hist_frames, "action": delta_hist})
-    emb_win = info["emb"].clone()                                      # (1, H, D)
-    act_emb_win = world_model.action_encoder(delta_hist)               # (1, H, A_emb)
-    prev_act = actions_t[history_size - 1]                             # (A,)
+    delta_hist = hist_acts - prev
+    info        = world_model.encode({"pixels": hist_frames, "action": delta_hist})
+    emb_win     = info["emb"].clone()                                      # (1, H, D)
+    act_emb_win = world_model.action_encoder(delta_hist)                   # (1, H, A_emb)
+    prev_act    = actions_t[history_size - 1]                              # (30,)
 
     # Autoregressive rollout
     pred_embs: list[torch.Tensor] = []
     for t in range(n_rollout):
         emb_trunc = emb_win[:, -history_size:]
         act_trunc = act_emb_win[:, -history_size:]
-        z_pred = world_model.predict(emb_trunc, act_trunc)[:, -1:]     # (1, 1, D)
-        pred_embs.append(z_pred[:, 0])                                  # (1, D)
-        emb_win = torch.cat([emb_win, z_pred], dim=1)
+        z_pred    = world_model.predict(emb_trunc, act_trunc)[:, -1:]      # (1, 1, D)
+        pred_embs.append(z_pred[:, 0])
+        emb_win   = torch.cat([emb_win, z_pred], dim=1)
 
-        next_act = actions_t[history_size + t]
-        delta_next = (next_act - prev_act).unsqueeze(0).unsqueeze(0)   # (1, 1, A)
-        act_emb_next = world_model.action_encoder(delta_next)
-        act_emb_win = torch.cat([act_emb_win, act_emb_next], dim=1)
-        prev_act = next_act
+        next_act        = actions_t[history_size + t]
+        delta_next      = (next_act - prev_act).unsqueeze(0).unsqueeze(0)  # (1, 1, 30)
+        act_emb_next    = world_model.action_encoder(delta_next)
+        act_emb_win     = torch.cat([act_emb_win, act_emb_next], dim=1)
+        prev_act        = next_act
 
-    pred_embs_t = torch.cat(pred_embs, dim=0)                          # (n_rollout, D)
+    pred_embs_t = torch.cat(pred_embs, dim=0)                             # (n_rollout, D)
 
-    # Decode
-    enc_imgs = decoder(enc_embs_t.to(device)).cpu()                    # (T, 3, 224, 224)
-    pred_imgs = decoder(pred_embs_t.to(device)).cpu()                  # (n_rollout, 3, 224, 224)
+    enc_imgs  = decoder(enc_embs_t.to(device)).cpu()
+    pred_imgs = decoder(pred_embs_t.to(device)).cpu()
 
     return {"gt_imgs": gt_imgs, "enc_imgs": enc_imgs, "pred_imgs": pred_imgs}
 
@@ -223,37 +240,42 @@ def rollout_episode_gc_idm(
     history_size: int = 3,
     n_rollout: int = 8,
     max_horizon: int = 50,
+    frameskip: int = 5,
+    out_h: int = 240,
+    out_w: int = 320,
 ) -> dict[str, torch.Tensor]:
     """Roll out JEPA + GC-IDM planner using predicted actions instead of GT.
 
-    Goal = last frame of the episode.  GC-IDM predicts the action at each step,
-    which is encoded and fed to the world-model predictor for forward simulation.
+    Goal = last frame of the episode.  GC-IDM predicts a 6-dim delta action
+    which is tiled to the 30-dim (frameskip×action_dim) format the world-model
+    action_encoder expects.
 
     Returns dict with keys:
-        gt_imgs   (T, 3, 224, 224)          — ground truth frames
-        pred_imgs (n_rollout, 3, 224, 224)  — decoded from GC-IDM rollout
-        goal_img  (1, 3, 224, 224)          — decoded goal embedding
+        gt_imgs   (T, 3, out_h, out_w)          — ground truth frames
+        pred_imgs (n_rollout, 3, out_h, out_w)  — decoded from GC-IDM rollout
+        goal_img  (1, 3, out_h, out_w)          — decoded goal embedding
     """
     world_model.eval()
     gc_idm.eval()
     decoder.eval()
     T = history_size + n_rollout
+    ep_end = ep_start + ep_len
 
-    resize = transforms.Resize((224, 224), antialias=True)
+    resize = transforms.Resize((out_h, out_w), antialias=True)
     raw_frames, gt_imgs, gt_actions = [], [], []
     for i in range(T):
-        idx = ep_start + i
-        sample = lerobot_ds[idx]
+        native_idx = ep_start + i * frameskip
+        sample = lerobot_ds[native_idx]
         img = sample[image_key]
         gt_imgs.append(resize(img))
         frames_u8 = (img * 255).clamp(0, 255).to(torch.uint8)
         pre = img_preprocessor({"pixels": frames_u8.unsqueeze(0)})["pixels"]
         raw_frames.append(pre)
-        gt_actions.append(torch.as_tensor(sample["action"], dtype=torch.float32))
+        gt_actions.append(_load_action_chunk(lerobot_ds, native_idx, frameskip, ep_end))
 
-    gt_imgs = torch.stack(gt_imgs)                                       # (T, 3, H, W)
-    frames_pre = torch.stack(raw_frames)[:, 0].unsqueeze(0).to(device)  # (1, T, C, H, W)
-    actions_t = torch.stack(gt_actions).to(device)                       # (T, A)
+    gt_imgs    = torch.stack(gt_imgs)                                        # (T, 3, H, W)
+    frames_pre = torch.stack(raw_frames)[:, 0].unsqueeze(0).to(device)      # (1, T, C, H, W)
+    actions_t  = torch.stack(gt_actions).to(device)                         # (T, 30)
 
     # Encode goal = last frame of episode
     goal_sample = lerobot_ds[ep_start + ep_len - 1]
@@ -261,44 +283,47 @@ def rollout_episode_gc_idm(
     goal_pre = (
         img_preprocessor({"pixels": goal_u8.unsqueeze(0)})["pixels"]
         .unsqueeze(0).to(device)
-    )                                                                    # (1, 1, C, H, W)
-    z_goal = world_model.encode({"pixels": goal_pre})["emb"][:, 0]      # (1, D)
-    goal_img = decoder(z_goal).cpu()                                     # (1, 3, H, W)
+    )                                                                        # (1, 1, C, H, W)
+    z_goal   = world_model.encode({"pixels": goal_pre})["emb"][:, 0]        # (1, D)
+    goal_img = decoder(z_goal).cpu()                                         # (1, 3, H, W)
 
-    # Encode history context with GT delta actions (same as GT rollout)
+    # Encode history context with GT delta actions
     hist_frames = frames_pre[:, :history_size]
-    hist_acts = actions_t[:history_size].unsqueeze(0)                    # (1, H, A)
+    hist_acts   = actions_t[:history_size].unsqueeze(0)                      # (1, H, 30)
     prev = torch.cat(
         [torch.zeros(1, 1, hist_acts.shape[-1], device=device), hist_acts[:, :-1]],
         dim=1,
     )
-    delta_hist = hist_acts - prev
-    info = world_model.encode({"pixels": hist_frames, "action": delta_hist})
-    emb_win = info["emb"].clone()                                        # (1, H, D)
-    act_emb_win = world_model.action_encoder(delta_hist)                 # (1, H, A_emb)
+    delta_hist  = hist_acts - prev
+    info        = world_model.encode({"pixels": hist_frames, "action": delta_hist})
+    emb_win     = info["emb"].clone()                                        # (1, H, D)
+    act_emb_win = world_model.action_encoder(delta_hist)                     # (1, H, A_emb)
 
     action_mean = action_mean.to(device)
-    action_std = action_std.to(device)
+    action_std  = action_std.to(device)
 
-    # Autoregressive GC-IDM rollout
+    # GC-IDM predicts 6-dim normalized delta; tile to 30-dim for action_encoder
+    gc_idm_action_dim = gc_idm.fc3.out_features  # 6
+    wm_action_dim     = world_model.action_encoder.patch_embed.in_channels   # 30
+    tile_factor       = wm_action_dim // gc_idm_action_dim                   # 5
+
     pred_embs: list[torch.Tensor] = []
     for t in range(n_rollout):
-        # Predict next embedding from current context window
         emb_trunc = emb_win[:, -history_size:]
         act_trunc = act_emb_win[:, -history_size:]
-        z_next = world_model.predict(emb_trunc, act_trunc)[:, -1:]      # (1, 1, D)
-        pred_embs.append(z_next[:, 0])                                   # (1, D)
-        emb_win = torch.cat([emb_win, z_next], dim=1)
+        z_next    = world_model.predict(emb_trunc, act_trunc)[:, -1:]        # (1, 1, D)
+        pred_embs.append(z_next[:, 0])
+        emb_win   = torch.cat([emb_win, z_next], dim=1)
 
-        # GC-IDM: predict what action to take FROM z_next toward z_goal
-        h = torch.tensor([max(1, max_horizon - t - 1)], device=device)
-        a_norm = gc_idm(z_next[:, 0], z_goal, h)                        # (1, A) normalised
-        a_delta = a_norm * action_std + action_mean                      # de-normalise
-        act_emb_next = world_model.action_encoder(a_delta.unsqueeze(1)) # (1, 1, A_emb)
-        act_emb_win = torch.cat([act_emb_win, act_emb_next], dim=1)
+        h      = torch.tensor([max(1, max_horizon - t - 1)], device=device)
+        a_norm = gc_idm(z_next[:, 0], z_goal, h)                            # (1, 6) normalised
+        a_6    = a_norm * action_std + action_mean                           # de-normalise (1, 6)
+        a_30   = a_6.repeat(1, tile_factor)                                  # tile to (1, 30)
+        act_emb_next = world_model.action_encoder(a_30.unsqueeze(1))         # (1, 1, A_emb)
+        act_emb_win  = torch.cat([act_emb_win, act_emb_next], dim=1)
 
-    pred_embs_t = torch.cat(pred_embs, dim=0)                           # (n_rollout, D)
-    pred_imgs = decoder(pred_embs_t).cpu()                               # (n_rollout, 3, H, W)
+    pred_embs_t = torch.cat(pred_embs, dim=0)                               # (n_rollout, D)
+    pred_imgs   = decoder(pred_embs_t).cpu()
 
     return {"gt_imgs": gt_imgs, "pred_imgs": pred_imgs, "goal_img": goal_img}
 
@@ -360,17 +385,24 @@ def parse_args() -> argparse.Namespace:
                    help="Directory to save decoder.pt and visualizations")
     p.add_argument("--repo-id", default="maelicneau/stack_cubes")
     p.add_argument("--data-root",
-                   default="/home/maelicneau/Documents/tmp/leWorldRobot/datasets/stack_cubes")
+                   default="leWorldRobot/datasets/stack_cubes")
     p.add_argument("--image-key", default="observation.images.up")
     p.add_argument("--encoder-scale", default="tiny")
     p.add_argument("--embed-dim", type=int, default=192)
     p.add_argument("--history-size", type=int, default=3)
-    p.add_argument("--img-size", type=int, default=224)
+    p.add_argument("--img-size", type=int, default=224,
+                   help="Encoder input size (ViT sees this square resolution)")
+    p.add_argument("--out-h", type=int, default=240,
+                   help="Decoder output height (target/visualization resolution)")
+    p.add_argument("--out-w", type=int, default=320,
+                   help="Decoder output width (target/visualization resolution)")
     p.add_argument("--patch-size", type=int, default=14)
     p.add_argument("--decoder-dim", type=int, default=256)
     p.add_argument("--steps", type=int, default=20000)
     p.add_argument("--batch-size", type=int, default=256)
     p.add_argument("--lr", type=float, default=1e-3)
+    p.add_argument("--frameskip", type=int, default=5,
+                   help="Native frames between model steps (must match training)")
     p.add_argument("--n-rollout", type=int, default=8,
                    help="Number of autoregressive steps in rollout visualization")
     p.add_argument("--gc-idm-path", default=None,
@@ -431,12 +463,14 @@ def main() -> None:
         img_size=args.img_size,
         patch_size=args.patch_size,
         decoder_dim=args.decoder_dim,
+        out_h=args.out_h,
+        out_w=args.out_w,
     ).to(device)
     n_params = sum(p.numel() for p in decoder.parameters())
     print(f"Decoder: {n_params/1e6:.1f}M params")
 
     # ── Training loop ─────────────────────────────────────────────────────────
-    paired_ds = ZImageDataset(emb_flat, lerobot_ds, args.image_key, args.img_size)
+    paired_ds = ZImageDataset(emb_flat, lerobot_ds, args.image_key, args.out_h, args.out_w)
     loader = DataLoader(
         paired_ds, batch_size=args.batch_size, shuffle=True, num_workers=4,
         pin_memory=True, drop_last=True,
@@ -490,7 +524,7 @@ def main() -> None:
     # Pick 8 random frames spread across the dataset
     n_vis = 8
     indices = torch.linspace(0, len(lerobot_ds) - 1, n_vis).long().tolist()
-    resize = transforms.Resize((args.img_size, args.img_size), antialias=True)
+    resize = transforms.Resize((args.out_h, args.out_w), antialias=True)
 
     gt_vis, recon_vis = [], []
     with torch.no_grad():
@@ -528,6 +562,9 @@ def main() -> None:
             ep_len=ep_len,
             history_size=args.history_size,
             n_rollout=n_rollout,
+            frameskip=args.frameskip,
+            out_h=args.out_h,
+            out_w=args.out_w,
         )
 
     T = args.history_size + n_rollout
@@ -603,6 +640,9 @@ def main() -> None:
                 history_size=args.history_size,
                 n_rollout=n_rollout,
                 max_horizon=max_horizon_vis,
+                frameskip=args.frameskip,
+                out_h=args.out_h,
+                out_w=args.out_w,
             )
 
         gc_idm_pred_row = torch.cat([

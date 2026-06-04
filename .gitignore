@@ -71,9 +71,3 @@ lewm/policies/
 lewm/planning/
 lewm/deploy_so100.py
 lewm/rollout_wm_planning.py
-
-# Research / analysis scripts not part of the deployment pipeline
-identifiability.py
-run_identifiability_*.py
-action_diversity.py
-train_decoder.py

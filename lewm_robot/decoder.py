@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 
 
 class JEPADecoder(nn.Module):
@@ -27,12 +28,17 @@ class JEPADecoder(nn.Module):
         img_size: int = 224,
         patch_size: int = 14,
         decoder_dim: int = 256,
+        out_h: int | None = None,
+        out_w: int | None = None,
     ) -> None:
         super().__init__()
         self.patch_size = patch_size
         self.img_size = img_size
         self.n = img_size // patch_size          # patches per side (16)
         self.num_patches = self.n * self.n       # total patches (256)
+        # Output resolution — defaults to square img_size; bilinear upsample applied if different.
+        self._out_h = out_h if out_h is not None else img_size
+        self._out_w = out_w if out_w is not None else img_size
 
         # Expand the single CLS vector into per-patch embeddings.
         # The linear layer acts as a learned spatial expansion (no positional
@@ -67,4 +73,8 @@ class JEPADecoder(nn.Module):
         # Fold patches into spatial image: (B, n, n, 3, p, p) → (B, 3, H, W)
         pixels = pixels.view(B, self.n, self.n, 3, self.patch_size, self.patch_size)
         img = pixels.permute(0, 3, 1, 4, 2, 5).reshape(B, 3, self.img_size, self.img_size)
-        return torch.sigmoid(img)
+        img = torch.sigmoid(img)
+        if self._out_h != self.img_size or self._out_w != self.img_size:
+            img = F.interpolate(img, size=(self._out_h, self._out_w),
+                                mode="bilinear", align_corners=False)
+        return img

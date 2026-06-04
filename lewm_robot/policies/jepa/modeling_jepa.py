@@ -321,7 +321,7 @@ class JEPAPolicy(PreTrainedPolicy):
             a_norm = self.gc_idm(z_t, goal, h)      # (1, action_dim)
             actions.append(a_norm * std + mean)
 
-        self._horizon = max(1, self._horizon - self.config.chunk_size)
+        self._horizon = max(self.config.horizon_floor, self._horizon - self.config.chunk_size)
         return torch.stack(actions, dim=1)          # (1, chunk_size, action_dim)
 
     @torch.no_grad()
