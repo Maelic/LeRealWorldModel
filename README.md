@@ -1,6 +1,6 @@
 # LeRealWorldModel
 
-<video src="https://github.com/Maelic/LeRealWorldModel/raw/main/figs/decoder_recon_sidebyside.mp4" controls width="640"></video>
+[![Decoder reconstruction](figs/decoder_recon_preview.gif)](https://github.com/Maelic/LeRealWorldModel/raw/main/figs/decoder_recon_sidebyside.mp4)
 
 A **JEPA latent world model** + **GC-IDM amortized planner** for goal-conditioned
 manipulation on the [SO-100](https://github.com/TheRobotStudio/SO-ARM100) arm —
@@ -130,7 +130,7 @@ contrastivity, equivariance, action invertibility, probe generalisation, DCI,
 plus an action-corruption ablation (`--corruption`):
 
 ```bash
-python run_identifiability_so100.py \
+python analysis/run_identifiability_so100.py \
     --ckpt        checkpoints/so100_topcam/lewm_so100_topcam_epoch_50_object.ckpt \
     --normalizers checkpoints/so100_topcam/lewm_so100_topcam_normalizers.pt
 ```
@@ -197,14 +197,16 @@ benefits from Sentry / RTC strategies).
 ├── jepa.py / module.py / utils.py     # JEPA model, predictor/embedder/SIGReg, helpers
 ├── train_lewm.py                      # Stage 1 entry-point (Hydra + Lightning)
 ├── train_gc_idm.py                    # Stage 2: GC-IDM supervised training
-├── export_policy.py                   # bundle → LeRobot checkpoint
 ├── train_jepa_decoder.py              # pixel-decoder probe (CLS → image)
-├── train_decoder.py                   # older standalone decoder probe
-├── identifiability.py                 # probes, equivariance, DCI, action diversity
-├── action_diversity.py               # corrupt_actions ablation
-├── run_identifiability_so100.py       # identifiability eval runner (SO-100)
+├── export_policy.py                   # bundle → LeRobot checkpoint
 ├── config/train/                      # lewm_so100*.yaml (Stage 1), gc_idm*.yaml (Stage 2)
 ├── scripts/                           # collect / train_stage{1,2} / export / deploy / decoder
+├── analysis/                          # offline probing and evaluation (not needed for deploy)
+│   ├── identifiability.py             # affine/nonlinear probes, equivariance, DCI
+│   ├── action_diversity.py            # corrupt_actions ablation
+│   ├── run_identifiability_so100.py   # identifiability eval runner (SO-100)
+│   └── train_decoder.py              # standalone pixel-decoder probe
+├── figs/                              # README assets (GIF teaser, MP4 full-res)
 ├── lewm_robot/                        # current package: JEPA + GC-IDM
 │   ├── policies/jepa/                 # JEPAConfig, JEPAPolicy, GCIDM, processor
 │   ├── decoder.py                     # JEPADecoder (MAE-style)

@@ -37,7 +37,9 @@ import torch
 import torch.nn.functional as F
 from torchvision.transforms import v2 as T
 
-sys.path.insert(0, str(Path(__file__).parent))
+_REPO_ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(_REPO_ROOT))           # jepa.py, module.py, utils.py
+sys.path.insert(0, str(Path(__file__).parent)) # identifiability.py, action_diversity.py
 
 from jepa import JEPA
 from identifiability import (
