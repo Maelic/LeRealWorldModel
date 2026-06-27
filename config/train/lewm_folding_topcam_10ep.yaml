@@ -1,0 +1,69 @@
+# Stage 1 smoke test: JEPA world model on 10 episodes of the folding dataset,
+# base camera only. Fast local run on 16 GB VRAM, with wandb logging enabled.
+defaults:
+  - _self_
+  - data: folding_topcam_10ep
+
+output_model_name: lewm_folding_topcam_10ep
+subdir: folding_topcam_10ep
+
+num_workers: 4
+train_split: 0.9
+seed: 3072
+img_size: 224
+patch_size: 14
+encoder_scale: tiny
+dump_object: True
+compile: False
+
+trainer:
+  max_epochs: 30
+  devices: auto
+  accelerator: gpu
+  precision: bf16-mixed
+  gradient_clip_val: 1.0
+  log_every_n_steps: 5
+
+loader:
+  batch_size: 64
+  num_workers: ${num_workers}
+  persistent_workers: True
+  prefetch_factor: 2
+  pin_memory: True
+
+optimizer:
+  type: AdamW
+  lr: 5e-5
+  weight_decay: 1e-3
+
+wandb:
+  enabled: True
+  config:
+    entity: null                 # null → your default wandb entity (maelic)
+    project: lewm_folding
+    name: ${output_model_name}
+    id: ${subdir}
+    resume: allow
+    log_model: False
+
+wm:
+  type: lewm
+  history_size: 3
+  num_preds: 1
+  embed_dim: 192
+  action_dim: 16          # bimanual 16-DOF; auto-overwritten from dataset metadata
+
+predictor:
+  depth: 6
+  heads: 16
+  mlp_dim: 2048
+  dim_head: 64
+  dropout: 0.1
+  emb_dropout: 0.0
+
+loss:
+  sigreg:
+    weight: 0.09
+    kwargs:
+      knots: 17
+      num_proj: 1024

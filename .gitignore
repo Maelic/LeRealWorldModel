@@ -67,3 +67,6 @@ Thumbs.db
 # Session / agent artifacts
 .claude/
 
+
+# wandb run-resume marker (runtime artifact)
+wandb_resume.json

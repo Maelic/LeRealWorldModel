@@ -1,0 +1,31 @@
+# Bimanual folding dataset (lerobot/high_quality_folding) — single fixed camera only.
+#
+# robot_type: openarms_follower (bimanual, 16-DOF: 7 joints + 1 gripper per arm).
+# The world model auto-detects action_dim (16) from the dataset metadata, so the
+# bimanual / higher-DOF difference vs SO-100 needs no code changes — the action
+# is just a flat vector fed to the action embedder.
+#
+# Cameras in this dataset: observation.images.{base,left_wrist,right_wrist}.
+# There is no camera literally named "top"; `base` is the fixed external/scene
+# view (the wrist cams are ego-centric). Use `base` as the single view.
+dataset:
+  _target_: lewm_robot.data.lerobot_adapter.LeRobotWMDataset  # NB: package is lewm_robot, not lewm
+  repo_id: lerobot/high_quality_folding
+  root: null                       # null → pull from the HF hub cache
+  image_key: observation.images.base
+  image_key2: null                 # single camera → no cam_fuser created
+  proprio_key: observation.state
+  action_key: action
+  state_key: null
+  frameskip: 5                     # fps=30 → effective 6 Hz, same as the SO-100 setup
+  num_steps: ${eval:'${wm.num_preds} + ${wm.history_size}'}
+  return_uint8: true
+  keys_to_load:
+    - pixels
+    - action
+    - proprio
+  # null → all 1200 episodes (3.25M frames). This is the full-dataset config used
+  # for HPC training. To subset, either swap in the `folding_topcam_10ep` data
+  # config or override on the CLI, e.g.:
+  #   data.dataset.episodes='[0,1,2,3,4,5,6,7,8,9]'
+  episodes: null

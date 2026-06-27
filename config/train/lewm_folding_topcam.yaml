@@ -1,0 +1,77 @@
+# Stage 1: JEPA world model on the bimanual folding dataset — base camera only.
+# Full-dataset (all 1200 episodes), tuned for a single 80 GB GPU (A100/H100) on
+# HPC. For a quick local smoke test on a 16 GB card use lewm_folding_topcam_10ep.
+#
+# Most cluster-specific knobs (batch size, workers, epochs, episode subset) can be
+# overridden from the SLURM script via Hydra CLI args — see scripts/slurm/train_jepa_folding.sh.
+defaults:
+  - _self_
+  - data: folding_topcam        # episodes: null → full 1200-episode dataset
+
+output_model_name: lewm_folding_topcam
+subdir: folding_topcam
+
+num_workers: 16                 # match --cpus-per-task on the HPC node
+train_split: 0.9
+seed: 3072
+img_size: 224
+patch_size: 14
+encoder_scale: tiny             # try `small` (hidden 384) once Tiny is a baseline
+dump_object: True
+compile: True                   # worth it on A100/H100; set False to debug
+
+trainer:
+  max_epochs: 100
+  devices: auto
+  accelerator: gpu
+  precision: bf16-mixed
+  gradient_clip_val: 1.0
+  log_every_n_steps: 20
+
+loader:
+  batch_size: 256               # ViT-Tiny is tiny; 80 GB fits this easily. The
+                                # wall-clock bottleneck is video decode, not VRAM —
+                                # raise --cpus-per-task / num_workers before batch.
+  num_workers: ${num_workers}
+  persistent_workers: True
+  prefetch_factor: 4
+  pin_memory: True
+
+optimizer:
+  type: AdamW
+  # NOTE: lr is set for batch_size=64. If you raise the batch, scale lr roughly
+  # linearly (e.g. 256 → ~2e-4). Left conservative here; tune per run.
+  lr: 5e-5
+  weight_decay: 1e-3
+
+wandb:
+  enabled: True
+  config:
+    entity: null                # null → your default wandb entity
+    project: lewm_folding
+    name: ${output_model_name}
+    id: ${subdir}
+    resume: allow
+    log_model: False
+
+wm:
+  type: lewm
+  history_size: 3
+  num_preds: 1
+  embed_dim: 192                # JEPA latent dim; bump to 384 to "scale on higher dim"
+  action_dim: 16               # bimanual 16-DOF; auto-overwritten from dataset metadata
+
+predictor:
+  depth: 6
+  heads: 16
+  mlp_dim: 2048
+  dim_head: 64
+  dropout: 0.1
+  emb_dropout: 0.0
+
+loss:
+  sigreg:
+    weight: 0.09
+    kwargs:
+      knots: 17
+      num_proj: 1024

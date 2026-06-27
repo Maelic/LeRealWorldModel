@@ -113,13 +113,46 @@ class LeRobotWMDataset(Dataset):
                     f"{list(meta.video_keys)} or camera keys {list(meta.camera_keys)}"
                 )
 
-        # Build per-episode lengths/offsets in the same convention HDF5Dataset
-        # uses: lengths[i] = ep_to[i] - ep_from[i]; offsets[i] = ep_from[i].
+        # Build per-episode lengths/offsets. ``meta.episodes`` always describes the
+        # *full* dataset with global frame indices, but when ``episodes`` subsets the
+        # data LeRobotDataset compacts ``hf_dataset`` to just those episodes,
+        # re-indexed from 0. We therefore compute offsets that index into the
+        # (possibly compacted) ``hf_dataset`` for the parquet slice, and separately
+        # keep each clip-slot's *global* episode id — the video reader needs it, as
+        # it indexes the full ``meta.episodes`` and resolves the per-episode chunk
+        # file/offset. (Without ``episodes`` the two coincide.)
         episodes_meta = meta.episodes
         ep_from = np.asarray(episodes_meta["dataset_from_index"], dtype=np.int64)
         ep_to = np.asarray(episodes_meta["dataset_to_index"], dtype=np.int64)
-        lengths = ep_to - ep_from
-        offsets = ep_from
+        ep_ids = np.asarray(episodes_meta["episode_index"], dtype=np.int64)
+        all_lengths = ep_to - ep_from
+
+        if episodes is None:
+            lengths = all_lengths
+            offsets = ep_from
+            self._global_ep_ids = ep_ids
+        else:
+            sel = sorted({int(e) for e in episodes})
+            id_to_row = {int(e): i for i, e in enumerate(ep_ids)}
+            try:
+                rows = [id_to_row[e] for e in sel]
+            except KeyError as exc:
+                raise ValueError(
+                    f"episode {exc.args[0]} not found in dataset {repo_id!r} "
+                    f"({len(ep_ids)} episodes available)"
+                ) from None
+            lengths = all_lengths[rows]
+            # Compacted offsets: cumulative within the subset (hf_dataset is
+            # re-indexed from 0, in ascending episode order).
+            offsets = np.concatenate(([0], np.cumsum(lengths)[:-1])).astype(np.int64)
+            self._global_ep_ids = np.asarray(sel, dtype=np.int64)
+            # Guard the ascending-compaction assumption against the loaded rows.
+            n_rows = len(self._lerobot.hf_dataset)
+            if int(lengths.sum()) != n_rows:
+                raise RuntimeError(
+                    f"episode subset length mismatch: sum(lengths)={int(lengths.sum())} "
+                    f"!= len(hf_dataset)={n_rows}; episode ordering assumption broken"
+                )
 
         # Filter to requested keys.
         available = ["pixels", "action", "proprio"]
@@ -197,7 +230,10 @@ class LeRobotWMDataset(Dataset):
             local_indices = [start + i * self.frameskip for i in range(self.num_steps)]
             timestamps = [idx / self.fps for idx in local_indices]
             video_keys_query = {self._key_map[pk]: timestamps for pk in pixel_keys}
-            frames_dict = self._lerobot.reader._query_videos(video_keys_query, ep_idx)
+            # The reader indexes the *full* meta.episodes, so map the compacted
+            # clip-slot index back to its global episode id.
+            global_ep_idx = int(self._global_ep_ids[ep_idx])
+            frames_dict = self._lerobot.reader._query_videos(video_keys_query, global_ep_idx)
             for pk in pixel_keys:
                 frames = frames_dict[self._key_map[pk]]  # (T, C, H, W) float32 [0,1]
                 if frames.ndim == 3:
