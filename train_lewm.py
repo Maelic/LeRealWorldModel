@@ -7,6 +7,7 @@ import lightning as pl
 import stable_pretraining as spt
 import stable_worldmodel as swm
 import torch
+from lightning.pytorch.callbacks import ModelCheckpoint
 from lightning.pytorch.loggers import WandbLogger
 from omegaconf import OmegaConf, open_dict
 
@@ -222,15 +223,25 @@ def run(cfg):
         dirpath=run_dir, filename=cfg.output_model_name, epoch_interval=1,
     )
 
+    # Full trainer-state checkpoint (optimizer/epoch/LR schedule) for resume —
+    # the pickled objects above only hold model weights, and nothing ever wrote
+    # the legacy {name}_weights.ckpt the resume logic looked for.
+    lightning_ckpt_callback = ModelCheckpoint(
+        dirpath=run_dir, save_last=True, save_top_k=0, every_n_epochs=1
+    )
+
     trainer = pl.Trainer(
         **cfg.trainer,
-        callbacks=[object_dump_callback],
+        callbacks=[object_dump_callback, lightning_ckpt_callback],
         num_sanity_val_steps=1,
         logger=logger,
         enable_checkpointing=True,
     )
 
-    resume_ckpt = run_dir / f"{cfg.output_model_name}_weights.ckpt"
+    # Resume preference: Lightning last.ckpt (full state) → legacy weights file
+    last_ckpt = run_dir / "last.ckpt"
+    legacy_ckpt = run_dir / f"{cfg.output_model_name}_weights.ckpt"
+    resume_ckpt = last_ckpt if last_ckpt.exists() else legacy_ckpt
     manager = spt.Manager(
         trainer=trainer,
         module=world_model,
