@@ -187,14 +187,23 @@ class Transformer(nn.Module):
         return x
 
 class Embedder(nn.Module):
+    """Action-chunk embedder.
+
+    smoothed_dim=None (default) keeps the per-step Conv1d full-rank (input_dim →
+    input_dim). Setting it below input_dim reintroduces a channel bottleneck —
+    the old default of 10 silently crushed high-dimensional action chunks
+    (e.g. bimanual 16-DOF x frameskip 5 = 80 dims squeezed to 10).
+    """
+
     def __init__(
         self,
         input_dim=10,
-        smoothed_dim=10,
+        smoothed_dim=None,
         emb_dim=10,
         mlp_scale=4,
     ):
         super().__init__()
+        smoothed_dim = smoothed_dim or input_dim
         self.input_dim = input_dim
         self.emb_dim = emb_dim
         self.patch_embed = nn.Conv1d(input_dim, smoothed_dim, kernel_size=1, stride=1)
