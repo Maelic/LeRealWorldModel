@@ -19,6 +19,8 @@ patch_size: 14
 encoder_scale: tiny             # try `small` (hidden 384) once Tiny is a baseline
 dump_object: True
 compile: True                   # worth it on A100/H100; set False to debug
+ckpt_step_interval: 0           # >0 → pickle a rolling *_latest_object.ckpt every N steps
+                                # (use for long epochs where the per-epoch save is too rare)
 
 trainer:
   max_epochs: 100
@@ -34,7 +36,7 @@ loader:
                                 # raise --cpus-per-task / num_workers before batch.
   num_workers: ${num_workers}
   persistent_workers: True
-  prefetch_factor: 4
+  prefetch_factor: 2            # pyav decodes full-res AV1 into RAM; 4 OOM-kills the node
   pin_memory: True
 
 optimizer:
@@ -45,7 +47,7 @@ optimizer:
   weight_decay: 1e-3
 
 wandb:
-  enabled: True
+  enabled: False
   config:
     entity: null                # null → your default wandb entity
     project: lewm_folding

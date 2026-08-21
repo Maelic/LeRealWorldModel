@@ -98,6 +98,11 @@ class LeRobotWMDataset(Dataset):
             # tolerance_s must exceed max rounding error at the dataset fps (1/30 ≈ 0.0333s
             # can accumulate ~0.0003s of floating-point error, which exceeds the default 0.0001).
             tolerance_s=0.04,
+            # Force the pyav backend: the dataset videos are AV1-encoded and the
+            # Alvis system FFmpeg that torchcodec links against lacks an AV1 decoder
+            # ("Could not push packet to decoder: Function not implemented"). pyav
+            # bundles its own FFmpeg with libdav1d, so it decodes AV1 fine.
+            video_backend="pyav",
             # No delta_timestamps and no image_transforms — we drive both
             # ourselves in _load_slice so we can pack into (T, C, H, W) batches
             # and apply the same preprocessor used at training time.
