@@ -1,0 +1,208 @@
+This job can be monitored from: https://job.c3se.chalmers.se/alvis/6781857
+============================================================
+  Stage 1: JEPA world model — cloth folding (base cam)
+  HPC_REPO   = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+  HF_HOME    = /mimer/NOBACKUP/groups/naiss2026-4-349/.hf_cache
+  CONFIG     = lewm_folding_topcam
+  BATCH_SIZE = 512   EPOCHS = 50
+  EPISODES   = <full dataset>   LR = 3e-4
+  HF_HUB_OFFLINE=1   WANDB_MODE=offline
+  NODE       = alvis4-41
+  SLURM_JOB_ID = 6781857   CPUS = 16
+  GPU        = NVIDIA A100-SXM4-80GB, 81920 MiB
+============================================================
+
+--- GPU state before training ---
+Sun Jun 28 05:21:51 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.58.03              Driver Version: 595.58.03      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:4B:00.0 Off |                    0 |
+| N/A   26C    P0             60W /  500W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+--- Starting training ---
+python train_lewm.py --config-name lewm_folding_topcam loader.batch_size=512 num_workers=16 trainer.max_epochs=50 wandb.enabled=true optimizer.lr=3e-4
+05:22:22 | INFO  | atomic_chec~| [atomic_save] installed crash-safe checkpoint plugin (write to sibling .tmp + fsync + atomic rename)
+[2026-06-28 05:22:22,536][lerobot.datasets.video_utils][INFO] - Using video codec: libsvtav1
+05:22:22 | ERROR | richuru.py  | Exception:
+Traceback (most recent call last):
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_metadata.py", line 109, in __init__
+    self._load_metadata()
+    │    └ <function LeRobotDatasetMetadata._load_metadata at 0x14d5da29e2a0>
+    └ <unprintable LeRobotDatasetMetadata object>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_metadata.py", line 176, in _load_metadata
+    self.info = load_info(self.root)
+    │           │         │    └ PosixPath('/mimer/NOBACKUP/groups/naiss2026-4-349/.hf_cache/lerobot/lerobot/high_quality_folding')
+    │           │         └ <unprintable LeRobotDatasetMetadata object>
+    │           └ <function load_info at 0x14d5da28a2a0>
+    └ <unprintable LeRobotDatasetMetadata object>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/io_utils.py", line 161, in load_info
+    info = load_json(local_dir / INFO_PATH)
+           │         │           └ 'meta/info.json'
+           │         └ PosixPath('/mimer/NOBACKUP/groups/naiss2026-4-349/.hf_cache/lerobot/lerobot/high_quality_folding')
+           └ <function load_json at 0x14d5da28a0c0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/io_utils.py", line 128, in load_json
+    with open(fpath) as f:
+              └ PosixPath('/mimer/NOBACKUP/groups/naiss2026-4-349/.hf_cache/lerobot/lerobot/high_quality_folding/meta/info.json')
+
+FileNotFoundError: [Errno 2] No such file or directory: '/mimer/NOBACKUP/groups/naiss2026-4-349/.hf_cache/lerobot/lerobot/high_quality_folding/meta/info.json'
+
+
+During handling of the above exception, another exception occurred:
+
+
+Traceback (most recent call last):
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/instantiate/_instantiate2.py", line 92, in _call_target
+    return _target_(*args, **kwargs)
+           │         │       └ {'repo_id': 'lerobot/high_quality_folding', 'root': None, 'image_key': 'observation.images.base', 'image_key2': None, 'propri...
+           │         └ ()
+           └ <class 'lewm_robot.data.lerobot_adapter.LeRobotWMDataset'>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/lewm_robot/data/lerobot_adapter.py", line 94, in __init__
+    self._lerobot = LeRobotDataset(
+    │               └ <class 'lerobot.datasets.lerobot_dataset.LeRobotDataset'>
+    └ <lewm_robot.data.lerobot_adapter.LeRobotWMDataset object at 0x14d5da40fa10>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/lerobot_dataset.py", line 212, in __init__
+    self.meta = LeRobotDatasetMetadata(
+    │           └ <class 'lerobot.datasets.dataset_metadata.LeRobotDatasetMetadata'>
+    └ <unprintable LeRobotDataset object>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_metadata.py", line 112, in __init__
+    self.revision = get_safe_version(self.repo_id, self.revision)
+    │    │          │                │    │        │    └ 'v3.0'
+    │    │          │                │    │        └ <unprintable LeRobotDatasetMetadata object>
+    │    │          │                │    └ 'lerobot/high_quality_folding'
+    │    │          │                └ <unprintable LeRobotDatasetMetadata object>
+    │    │          └ <function get_safe_version at 0x14d5da288540>
+    │    └ 'v3.0'
+    └ <unprintable LeRobotDatasetMetadata object>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/utils.py", line 299, in get_safe_version
+    hub_versions = get_repo_versions(repo_id)
+                   │                 └ 'lerobot/high_quality_folding'
+                   └ <function get_repo_versions at 0x14d5da2884a0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/utils.py", line 268, in get_repo_versions
+    repo_refs = api.list_repo_refs(repo_id, repo_type="dataset")
+                │   │              └ 'lerobot/high_quality_folding'
+                │   └ <function HfApi.list_repo_refs at 0x14d6ca5e87c0>
+                └ <huggingface_hub.hf_api.HfApi object at 0x14d5da2f0230>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+           │   │       └ {'repo_type': 'dataset'}
+           │   └ (<huggingface_hub.hf_api.HfApi object at 0x14d5da2f0230>, 'lerobot/high_quality_folding')
+           └ <function HfApi.list_repo_refs at 0x14d6ca5e85e0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/huggingface_hub/hf_api.py", line 3959, in list_repo_refs
+    response = get_session().get(
+               └ <function get_session at 0x14d6cad24e00>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1053, in get
+    return self.request(
+           │    └ <function Client.request at 0x14d6cb253560>
+           └ <httpx.Client object at 0x14d5da2f0350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/httpx/_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           │    │    │             │                      └ <httpx._client.UseClientDefault object at 0x14d6cb4a0590>
+           │    │    │             └ <httpx._client.UseClientDefault object at 0x14d6cb4a0590>
+           │    │    └ <Request('GET', 'https://huggingface.co/api/datasets/lerobot/high_quality_folding/refs')>
+           │    └ <function Client.send at 0x14d6cb253740>
+           └ <httpx.Client object at 0x14d5da2f0350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/httpx/_client.py", line 914, in send
+    response = self._send_handling_auth(
+               │    └ <function Client._send_handling_auth at 0x14d6cb2537e0>
+               └ <httpx.Client object at 0x14d5da2f0350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/httpx/_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+               │    └ <function Client._send_handling_redirects at 0x14d6cb253880>
+               └ <httpx.Client object at 0x14d5da2f0350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/httpx/_client.py", line 977, in _send_handling_redirects
+    hook(request)
+    │    └ <Request('GET', 'https://huggingface.co/api/datasets/lerobot/high_quality_folding/refs')>
+    └ <function hf_request_event_hook at 0x14d6cad249a0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/huggingface_hub/utils/_http.py", line 224, in hf_request_event_hook
+    raise OfflineModeIsEnabled(
+          └ <class 'huggingface_hub.errors.OfflineModeIsEnabled'>
+
+huggingface_hub.errors.OfflineModeIsEnabled: Cannot reach https://huggingface.co/api/datasets/lerobot/high_quality_folding/refs: offline mode is enabled. To disable it, please unset the `HF_HUB_OFFLINE` environment variable.
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+> File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 261, in <module>
+    run()
+    └ <function run at 0x14d5da4a2980>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+    └ <function _run_hydra at 0x14d8505aede0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+    └ <function _run_app at 0x14d8505aee80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+    └ <function run_and_report at 0x14d8505aed40>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+           └ <function _run_app.<locals>.<lambda> at 0x14d5da4c7a60>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+            │     └ <function Hydra.run at 0x14d85046e160>
+            └ <hydra._internal.hydra.Hydra object at 0x14d5da4a4c80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+        │   └ <property object at 0x14d850578360>
+        └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+          │    └ InstantiationException("Error in call to target 'lewm_robot.data.lerobot_adapter.LeRobotWMDataset':\nOfflineModeIsEnabled('Ca...
+          └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+    │   │              │             └ {'output_model_name': 'lewm_folding_topcam', 'subdir': 'folding_topcam', 'num_workers': 16, 'train_split': 0.9, 'seed': 3072,...
+    │   │              └ <function run at 0x14d5da4a2ac0>
+    │   └ <property object at 0x14d850578360>
+    └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 87, in run
+    dataset = hydra.utils.instantiate(
+              │     │     └ <function instantiate at 0x14d8505af600>
+              │     └ <module 'hydra.utils' from '/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/...
+              └ <module 'hydra' from '/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/__init...
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/instantiate/_instantiate2.py", line 226, in instantiate
+    return instantiate_node(
+           └ <function instantiate_node at 0x14d8505af740>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/instantiate/_instantiate2.py", line 347, in instantiate_node
+    return _call_target(_target_, partial, args, kwargs, full_key)
+           │            │         │        │     │       └ 'data.dataset'
+           │            │         │        │     └ {'repo_id': 'lerobot/high_quality_folding', 'root': None, 'image_key': 'observation.images.base', 'image_key2': None, 'propri...
+           │            │         │        └ ()
+           │            │         └ False
+           │            └ <class 'lewm_robot.data.lerobot_adapter.LeRobotWMDataset'>
+           └ <function _call_target at 0x14d8505af380>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/instantiate/_instantiate2.py", line 97, in _call_target
+    raise InstantiationException(msg) from e
+          │                      └ "Error in call to target 'lewm_robot.data.lerobot_adapter.LeRobotWMDataset':\nOfflineModeIsEnabled('Cannot reach https://hugg...
+          └ <class 'hydra.errors.InstantiationException'>
+
+hydra.errors.InstantiationException: Error in call to target 'lewm_robot.data.lerobot_adapter.LeRobotWMDataset':
+OfflineModeIsEnabled('Cannot reach https://huggingface.co/api/datasets/lerobot/high_quality_folding/refs: offline mode is enabled. To disable it, please unset the `HF_HUB_OFFLINE` environment variable.')
+full_key: data.dataset

@@ -1,0 +1,674 @@
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/envs/__init__.py:215: UserWarning: ale-py not found; ALE/* envs are unavailable. Install with: pip install 'stable-worldmodel[env]' or pip install ale-py.
+  from stable_worldmodel.envs import ale  # noqa: F401
+Using custom data configuration default-0d82af4f36087119
+Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-0d82af4f36087119/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+Using custom data configuration default-63e228ed67ba0811
+Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-63e228ed67ba0811/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+wandb: WARNING The anonymous setting has no effect and will be removed in a future version.
+wandb: WARNING `resume` will be ignored since W&B syncing is set to `offline`. Starting a new run with run id folding_topcam.
+wandb: Tracking run with wandb version 0.24.2
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in wandb/offline-run-20260628_054648-folding_topcam
+Using bfloat16 Automatic Mixed Precision (AMP)
+Adding 14 callbacks from entry point 'stablepretraining_callbacks': PrintProgressBar, ModuleRegistryCallback, LoggingCallback, EnvironmentDumpCallback, TrainerInfo, SklearnCheckpoint, WandbCheckpoint, TrackioCheckpoint, SwanLabCheckpoint, ModuleSummary, SLURMInfo, LogUnusedParametersOnce, HuggingFaceCheckpointCallback, HardwareMonitor
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/fabric/utilities/seed.py:44: No seed found, seed set to 0
+[rank: 0] Seed set to 0
+💡 Tip: For seamless cloud uploads and versioning, try installing [litmodels](https://pypi.org/project/litmodels/) to enable LitModelCheckpoint, which syncs automatically with the Lightning model registry.
+You are using a CUDA device ('NVIDIA A100-SXM4-80GB') that has Tensor Cores. To properly utilize them, you should set `torch.set_float32_matmul_precision('medium' | 'high')` which will trade-off precision for performance. For more details, read https://pytorch.org/docs/stable/generated/torch.set_float32_matmul_precision.html#torch.set_float32_matmul_precision
+LOCAL_RANK: 0 - CUDA_VISIBLE_DEVICES: [0]
+Loading `train_dataloader` to estimate number of stepping batches.
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lance/__init__.py:320: UserWarning: lance is not fork-safe. If you are using multiprocessing, use spawn or forkserver instead.
+  warnings.warn(
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lance/__init__.py:320: UserWarning: lance is not fork-safe. If you are using multiprocessing, use spawn or forkserver instead.
+  warnings.warn(
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/model_summary/model_summary.py:242: Precision bf16-mixed is not supported by the model summary.  Estimated model size in MB will not be accurate. Using 32 bits instead.
+SLURM auto-requeueing enabled. Setting signal handlers.
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/_pytree.py:21: `isinstance(treespec, LeafSpec)` is deprecated, use `isinstance(treespec, TreeSpec) and treespec.is_leaf()` instead.
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lance/__init__.py:320: UserWarning: lance is not fork-safe. If you are using multiprocessing, use spawn or forkserver instead.
+  warnings.warn(
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lance/__init__.py:320: UserWarning: lance is not fork-safe. If you are using multiprocessing, use spawn or forkserver instead.
+  warnings.warn(
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/multiprocessing/popen_fork.py:66: RuntimeWarning: lancedb fork support is experimental: the internal async runtime has been reset in the forked child, but a small chance of deadlock remains if other state was mid-operation at fork time. The 'forkserver' or 'spawn' multiprocessing start method is likely a safer alternative.
+  self.pid = os.fork()
+
+!!! TRAINER FIT FAILED — RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = self.dataset.__getitems__(possibly_batched_index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/data/datasets.py", line 157, in __getitems__
+    return [self.dataset[self.indices[idx]] for idx in indices]
+            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 28, in __getitem__
+    item = self._ds[idx]
+           ~~~~~~~~^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/data/dataset.py", line 69, in __getitem__
+    steps = self._load_slice(ep_idx, start, start + self.span)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/lewm_robot/data/lerobot_adapter.py", line 236, in _load_slice
+    frames_dict = self._lerobot.reader._query_videos(video_keys_query, global_ep_idx)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 244, in _query_videos
+    frames = decode_video_frames(video_path, shifted_query_ts, self._tolerance_s, self._video_backend)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 152, in decode_video_frames
+    return decode_video_frames_torchcodec(video_path, timestamps, tolerance_s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 336, in decode_video_frames_torchcodec
+    decoder = decoder_cache.get_decoder(str(video_path))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 272, in get_decoder
+    from torchcodec.decoders import VideoDecoder
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/__init__.py", line 12, in <module>
+    from . import decoders, encoders, samplers, transforms  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/decoders/__init__.py", line 7, in <module>
+    from .._core import AudioStreamMetadata, VideoStreamMetadata
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/__init__.py", line 8, in <module>
+    from ._metadata import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/_metadata.py", line 16, in <module>
+    from torchcodec._core.ops import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 109, in <module>
+    ffmpeg_major_version, core_library_path = load_torchcodec_shared_libraries()
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 76, in load_torchcodec_shared_libraries
+    raise RuntimeError(
+RuntimeError: Could not load libtorchcodec. Likely causes:
+          1. FFmpeg is not properly installed in your environment. We support
+             versions 4, 5, 6, 7, and 8, and we attempt to load libtorchcodec
+             for each of those versions. Errors for versions not installed on
+             your system are expected; only the error for your installed FFmpeg
+             version is relevant. On Windows, ensure you've installed the
+             "full-shared" version which ships DLLs.
+          2. The PyTorch version (2.10.0+cu128) is not compatible with
+             this version of TorchCodec. Refer to the version compatibility
+             table:
+             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
+          3. Another runtime dependency; see exceptions below.
+
+        The following exceptions were raised as we tried to load libtorchcodec:
+        
+[start of libtorchcodec loading traceback]
+FFmpeg version 8:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.60: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core8.so
+
+FFmpeg version 7:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.59: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core7.so
+
+FFmpeg version 6:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.58: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core6.so
+
+FFmpeg version 5:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.57: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core5.so
+
+FFmpeg version 4:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.56: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core4.so
+[end of libtorchcodec loading traceback].
+
+    epoch=0/50, global_step=0
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1764, in __call__
+    self._trainer.fit(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 584, in fit
+    call._call_and_handle_interrupt(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/call.py", line 49, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 630, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path, weights_only=weights_only)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1079, in _run
+    results = self._run_stage()
+              ^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1121, in _run_stage
+    self._run_sanity_check()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1150, in _run_sanity_check
+    val_loop.run()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/utilities.py", line 179, in _decorator
+    return loop_run(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/evaluation_loop.py", line 139, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+                                       ^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 134, in __next__
+    batch = super().__next__()
+            ^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 61, in __next__
+    batch = next(self.iterator)
+            ^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1548, in _next_data
+    return self._process_data(data, worker_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1586, in _process_data
+    data.reraise()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_utils.py", line 775, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = self.dataset.__getitems__(possibly_batched_index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/data/datasets.py", line 157, in __getitems__
+    return [self.dataset[self.indices[idx]] for idx in indices]
+            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 28, in __getitem__
+    item = self._ds[idx]
+           ~~~~~~~~^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/data/dataset.py", line 69, in __getitem__
+    steps = self._load_slice(ep_idx, start, start + self.span)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/lewm_robot/data/lerobot_adapter.py", line 236, in _load_slice
+    frames_dict = self._lerobot.reader._query_videos(video_keys_query, global_ep_idx)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 244, in _query_videos
+    frames = decode_video_frames(video_path, shifted_query_ts, self._tolerance_s, self._video_backend)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 152, in decode_video_frames
+    return decode_video_frames_torchcodec(video_path, timestamps, tolerance_s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 336, in decode_video_frames_torchcodec
+    decoder = decoder_cache.get_decoder(str(video_path))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 272, in get_decoder
+    from torchcodec.decoders import VideoDecoder
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/__init__.py", line 12, in <module>
+    from . import decoders, encoders, samplers, transforms  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/decoders/__init__.py", line 7, in <module>
+    from .._core import AudioStreamMetadata, VideoStreamMetadata
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/__init__.py", line 8, in <module>
+    from ._metadata import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/_metadata.py", line 16, in <module>
+    from torchcodec._core.ops import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 109, in <module>
+    ffmpeg_major_version, core_library_path = load_torchcodec_shared_libraries()
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 76, in load_torchcodec_shared_libraries
+    raise RuntimeError(
+RuntimeError: Could not load libtorchcodec. Likely causes:
+          1. FFmpeg is not properly installed in your environment. We support
+             versions 4, 5, 6, 7, and 8, and we attempt to load libtorchcodec
+             for each of those versions. Errors for versions not installed on
+             your system are expected; only the error for your installed FFmpeg
+             version is relevant. On Windows, ensure you've installed the
+             "full-shared" version which ships DLLs.
+          2. The PyTorch version (2.10.0+cu128) is not compatible with
+             this version of TorchCodec. Refer to the version compatibility
+             table:
+             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
+          3. Another runtime dependency; see exceptions below.
+
+        The following exceptions were raised as we tried to load libtorchcodec:
+        
+[start of libtorchcodec loading traceback]
+FFmpeg version 8:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.60: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core8.so
+
+FFmpeg version 7:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.59: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core7.so
+
+FFmpeg version 6:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.58: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core6.so
+
+FFmpeg version 5:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.57: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core5.so
+
+FFmpeg version 4:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.56: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core4.so
+[end of libtorchcodec loading traceback].
+
+Error executing job with overrides: ['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=3e-4']
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 261, in <module>
+    run()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+           ^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+            ^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+        ^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 241, in run
+    manager()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1764, in __call__
+    self._trainer.fit(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 584, in fit
+    call._call_and_handle_interrupt(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/call.py", line 49, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 630, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path, weights_only=weights_only)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1079, in _run
+    results = self._run_stage()
+              ^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1121, in _run_stage
+    self._run_sanity_check()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1150, in _run_sanity_check
+    val_loop.run()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/utilities.py", line 179, in _decorator
+    return loop_run(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/evaluation_loop.py", line 139, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+                                       ^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 134, in __next__
+    batch = super().__next__()
+            ^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 61, in __next__
+    batch = next(self.iterator)
+            ^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1548, in _next_data
+    return self._process_data(data, worker_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1586, in _process_data
+    data.reraise()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_utils.py", line 775, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = self.dataset.__getitems__(possibly_batched_index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/data/datasets.py", line 157, in __getitems__
+    return [self.dataset[self.indices[idx]] for idx in indices]
+            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 28, in __getitem__
+    item = self._ds[idx]
+           ~~~~~~~~^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/data/dataset.py", line 69, in __getitem__
+    steps = self._load_slice(ep_idx, start, start + self.span)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/lewm_robot/data/lerobot_adapter.py", line 236, in _load_slice
+    frames_dict = self._lerobot.reader._query_videos(video_keys_query, global_ep_idx)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 244, in _query_videos
+    frames = decode_video_frames(video_path, shifted_query_ts, self._tolerance_s, self._video_backend)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 152, in decode_video_frames
+    return decode_video_frames_torchcodec(video_path, timestamps, tolerance_s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 336, in decode_video_frames_torchcodec
+    decoder = decoder_cache.get_decoder(str(video_path))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 272, in get_decoder
+    from torchcodec.decoders import VideoDecoder
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/__init__.py", line 12, in <module>
+    from . import decoders, encoders, samplers, transforms  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/decoders/__init__.py", line 7, in <module>
+    from .._core import AudioStreamMetadata, VideoStreamMetadata
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/__init__.py", line 8, in <module>
+    from ._metadata import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/_metadata.py", line 16, in <module>
+    from torchcodec._core.ops import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 109, in <module>
+    ffmpeg_major_version, core_library_path = load_torchcodec_shared_libraries()
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 76, in load_torchcodec_shared_libraries
+    raise RuntimeError(
+RuntimeError: Could not load libtorchcodec. Likely causes:
+          1. FFmpeg is not properly installed in your environment. We support
+             versions 4, 5, 6, 7, and 8, and we attempt to load libtorchcodec
+             for each of those versions. Errors for versions not installed on
+             your system are expected; only the error for your installed FFmpeg
+             version is relevant. On Windows, ensure you've installed the
+             "full-shared" version which ships DLLs.
+          2. The PyTorch version (2.10.0+cu128) is not compatible with
+             this version of TorchCodec. Refer to the version compatibility
+             table:
+             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
+          3. Another runtime dependency; see exceptions below.
+
+        The following exceptions were raised as we tried to load libtorchcodec:
+        
+[start of libtorchcodec loading traceback]
+FFmpeg version 8:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.60: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core8.so
+
+FFmpeg version 7:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.59: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core7.so
+
+FFmpeg version 6:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.58: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core6.so
+
+FFmpeg version 5:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.57: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core5.so
+
+FFmpeg version 4:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.56: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core4.so
+[end of libtorchcodec loading traceback].
+
+srun: error: alvis4-41: task 0: Exited with exit code 1

@@ -1,0 +1,1473 @@
+This job can be monitored from: https://job.c3se.chalmers.se/alvis/6781858
+============================================================
+  Stage 1: JEPA world model — cloth folding (base cam)
+  HPC_REPO   = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+  HF_HOME    = /mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface
+  CONFIG     = lewm_folding_topcam
+  BATCH_SIZE = 512   EPOCHS = 50
+  EPISODES   = <full dataset>   LR = 3e-4
+  HF_HUB_OFFLINE=1   WANDB_MODE=offline
+  NODE       = alvis4-41
+  SLURM_JOB_ID = 6781858   CPUS = 16
+  GPU        = NVIDIA A100-SXM4-80GB, 81920 MiB
+============================================================
+
+--- GPU state before training ---
+Sun Jun 28 05:35:21 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.58.03              Driver Version: 595.58.03      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:4B:00.0 Off |                    0 |
+| N/A   26C    P0             60W /  500W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+--- Starting training ---
+python train_lewm.py --config-name lewm_folding_topcam loader.batch_size=512 num_workers=16 trainer.max_epochs=50 wandb.enabled=true optimizer.lr=3e-4
+05:35:47 | INFO  | atomic_chec~| [atomic_save] installed crash-safe checkpoint plugin (write to sibling .tmp + fsync + atomic rename)
+[2026-06-28 05:35:47,509][lerobot.datasets.video_utils][INFO] - Using video codec: libsvtav1
+[2026-06-28 05:35:47,530][datasets.builder][INFO] - Using custom data configuration default-0d82af4f36087119
+[2026-06-28 05:35:47,605][datasets.builder][INFO] - Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-0d82af4f36087119/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+[2026-06-28 05:35:47,736][datasets.builder][INFO] - Using custom data configuration default-63e228ed67ba0811
+[2026-06-28 05:35:47,744][datasets.builder][INFO] - Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-63e228ed67ba0811/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+05:46:46 | INFO  | utils.py    | Created ViT-tiny from scratch with config: {'hidden_size': 192, 'num_hidden_layers': 12, 'num_attention_heads': 3, 'intermediate_size': 768, 'image_size': 224, 'patch_size': 14}
+05:46:48 | INFO  | module.py   | Setting up DataModule
+05:46:48 | INFO  | utils.py    | ── Module ────────────────────────────────────────
+05:46:48 | WARN  | module.py   | ! No hyperparameters provided - hyperparameter logging is disabled.
+05:46:48 | INFO  | module.py   |   Setting custom forward method.
+05:46:48 | INFO  | module.py   |   Setting attribute: self.model = <class 'torch._dynamo.eval_frame.OptimizedModule'>
+05:46:48 | INFO  | module.py   |   Setting attribute: self.sigreg = <class 'module.SIGReg'>
+05:46:48 | INFO  | module.py   |   Setting attribute: self.optim = <class 'dict'>
+05:46:48 | INFO  | module.py   |   No metrics configuration provided - automatic metric tracking is disabled.
+05:46:49 | INFO  | env_info.py |   EnvironmentDumpCallback initialized (filename=environment.json, async=True)
+05:46:49 | INFO  | utils.py    | ── HuggingFaceCheckpoint ─────────────────────────
+05:46:49 | INFO  | hf_models.py|   save_dir: <cyan>hf_exports</cyan>
+05:46:49 | INFO  | hf_models.py|   per_step: <cyan>False</cyan>  (False ⇒ overwrite single 'last/' subdir; True ⇒ keep step_N/)
+05:46:49 | INFO  | utils.py    | ── SIGTERM preempt handler — install ─────────────
+05:46:49 | INFO  | manager.py  |   SLURM_JOB_ID         = '6781858'
+05:46:49 | INFO  | manager.py  |   SLURM_RESTART_COUNT  = '0'
+05:46:49 | INFO  | manager.py  |   SLURM_PROCID         = '0'
+05:46:49 | INFO  | manager.py  |   SLURM_NODEID         = '0'
+05:46:49 | INFO  | manager.py  |   submitit preempt signal = SIGUSR2 (signum=12; source: submitit default (USR2))
+05:46:49 | INFO  | manager.py  |   prior SIGTERM handler   = SIG_DFL (default OS action — terminate process)
+05:46:49 | INFO  | manager.py  |   prior SIGUSR2 handler   = SIG_DFL (default OS action — terminate process)
+05:46:49 | WARN  | manager.py  |   ! SIGUSR2 has no callable handler — submitit may not have installed its SignalHandler yet. Forwarding SIGTERM to it will hit the OS default action instead of checkpoint_and_try_requeue. Requeue will likely NOT happen.
+05:46:49 | OK    | manager.py  |   ✓ Installed pre-fit SIGTERM handler: <stable_pretraining.manager._install_sigterm_preempt_handler.<locals>._handler> [spt]
+05:46:49 | INFO  | manager.py  |     → forwards to SIGUSR2 on receipt; lightning's _SignalConnector will compose this handler into its chain (notifier → bypass → ours) when Trainer.fit() runs.
+05:46:49 | WARN  | manager.py  | User didn't specify seed, runs won't be exactly reproducible!
+05:46:49 | INFO  | manager.py  |   Manager init: ckpt_path=None, weights_only=True
+05:46:49 | INFO  | utils.py    | ── WorkingDirectory ──────────────────────────────
+05:46:49 | INFO  | manager.py  |   cwd: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+05:46:49 | INFO  | utils.py    | ── Seed ──────────────────────────────────────────
+05:46:49 | INFO  | manager.py  |   seed: None
+05:46:49 | INFO  | utils.py    | ── RunDirectory ──────────────────────────────────
+05:46:49 | INFO  | manager.py  |   cache_dir = /cephyr/users/maelic/Alvis/.cache/stable-pretraining
+05:46:49 | INFO  | manager.py  |   ddp: launch_key=slurm-6781858 rank=0 is_rank_zero=True
+05:46:49 | INFO  | utils.py    | ── RunDirectory: requeue probe ───────────────────
+05:46:49 | INFO  | manager.py  |   SLURM session key   = 6781858
+05:46:49 | INFO  | manager.py  |   SLURM_RESTART_COUNT = 0
+05:46:49 | INFO  | manager.py  |   in_requeue          = False
+05:46:49 | INFO  | utils.py    | ── RunDirectory: fresh ───────────────────────────
+05:46:49 | INFO  | manager.py  |   no user ckpt_path — training from scratch / pretrained backbone.
+05:46:49 | INFO  | manager.py  |   created run_dir = /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934
+05:46:49 | INFO  | manager.py  |   wrote run_meta.json with run_id=209a910d7934
+05:46:49 | INFO  | manager.py  |   SLURM index = /cephyr/users/maelic/Alvis/.cache/stable-pretraining/.slurm_index/6781858 → /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934
+05:46:49 | INFO  | manager.py  |   rank-0 published handoff → /cephyr/users/maelic/Alvis/.cache/stable-pretraining/.rank_handoff/slurm-6781858
+05:46:49 | INFO  | manager.py  |   → future SLURM requeue (SLURM_RESTART_COUNT ≥ 1) for key '6781858' will resume into this directory via the index entry written above.
+05:46:49 | WARN  | manager.py  | ! cache_dir is set but the Trainer was passed as an already-instantiated object. Cannot override default_root_dir cleanly. Consider passing the trainer as a config dict instead.
+05:46:49 | WARN  | manager.py  | ! Hydra run.dir='outputs/2026-06-28/05-35-47' will be ignored for trainer outputs (cache_dir takes precedence).
+05:46:49 | WARN  | manager.py  | ! Hydra sweep.dir='multirun/2026-06-28/05-35-47' will be ignored for trainer outputs (cache_dir takes precedence).
+05:46:49 | INFO  | logger.py   | [RegistryLogger] run_id=209a910d7934 run_dir=/cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934 — sidecar.json + summary.json + metrics.csv will live here
+05:46:49 | INFO  | utils.py    | ── RegistryLogger ────────────────────────────────
+05:46:49 | INFO  | manager.py  |   run_dir: /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934
+05:46:49 | INFO  | manager.py  |   run_id:  209a910d7934
+05:46:49 | INFO  | utils.py    | ── Wandb ─────────────────────────────────────────
+05:46:49 | INFO  | manager.py  |   fetching previous Wandb runs from wandb
+05:46:49 | INFO  | manager.py  |   found 1 run(s):
+05:46:49 | INFO  | manager.py  |   offline-run-20260628_054648-folding_topcam
+05:46:49 | INFO  | manager.py  |   No previous offline run found, using fresh config
+05:46:49 | INFO  | utils.py    | ── CSVLogger ─────────────────────────────────────
+05:46:49 | INFO  | manager.py  |   root_dir: /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934/
+05:46:49 | INFO  | manager.py  |   save_dir: /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934
+05:46:49 | INFO  | manager.py  |   log_dir: /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934/
+05:46:49 | INFO  | utils.py    | ── SignalHandlers (after submitit setup (spt SIGTERM installed in __init__)) ──
+05:46:49 | INFO  | manager.py  |   SIGUSR1  → SIG_DFL (default OS action — terminate process)
+05:46:49 | INFO  | manager.py  |   SIGUSR2  → SIG_DFL (default OS action — terminate process)
+05:46:49 | INFO  | manager.py  |   SIGCONT  → SIG_DFL (default OS action — terminate process)
+05:46:49 | INFO  | manager.py  |   SIGTERM  → <stable_pretraining.manager._install_sigterm_preempt_handler.<locals>._handler> [spt]
+05:46:49 | INFO  | utils.py    | ── Callbacks ─────────────────────────────────────
+05:46:49 | INFO  | manager.py  |   count: 19
+05:46:49 | INFO  | utils.py    | ── CacheDirCheckpointing ─────────────────────────
+05:46:49 | INFO  | manager.py  |   Saving checkpoints to: /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934/checkpoints
+05:46:49 | WARN  | manager.py  |   Redirecting HuggingFaceCheckpointCallback from 'hf_exports' to '/cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934/hf_exports' (cache_dir is active — prevents races on a shared cache)
+05:46:49 | INFO  | manager.py  |   Added requeue checkpoint (filename='last')
+05:46:49 | INFO  | utils.py    | ── LoadPath resolution ───────────────────────────
+05:46:49 | INFO  | manager.py  |   in_requeue = False
+05:46:49 | INFO  | manager.py  |   user ckpt_path = None
+05:46:49 | INFO  | manager.py  |   user weights_only = True
+05:46:49 | INFO  | manager.py  |   → no ckpt_path; training from scratch.
+05:46:49 | INFO  | utils.py    | ── TrainerFit ────────────────────────────────────
+05:46:49 | INFO  | manager.py  |   ckpt_path:     None
+05:46:49 | INFO  | manager.py  |   weights_only:  None
+05:46:49 | INFO  | utils.py    | ── SignalHandlers (before Trainer.fit() (handler installed in __init__)) ──
+05:46:49 | INFO  | manager.py  |   SIGUSR1  → SIG_DFL (default OS action — terminate process)
+05:46:49 | INFO  | manager.py  |   SIGUSR2  → SIG_DFL (default OS action — terminate process)
+05:46:49 | INFO  | manager.py  |   SIGCONT  → SIG_DFL (default OS action — terminate process)
+05:46:49 | INFO  | manager.py  |   SIGTERM  → <stable_pretraining.manager._install_sigterm_preempt_handler.<locals>._handler> [spt]
+05:46:49 | INFO  | manager.py  |   → entering Trainer.fit(); lightning's _SignalConnector will now register its own handlers. SIGTERM will become _HandlersCompose([_sigterm_notifier_fn, _sigterm_handler_fn, spt._handler]); USR-sig binding from submitit is preserved (lightning skips USR registration when one already exists).
+05:46:50 | OK    | module.py   | ✓ dataset for TrainerFn.FITTING loaded
+05:46:50 | INFO  | module.py   |   setup was done by user
+05:46:50 | INFO  | utils.py    | ── EnvironmentDump ───────────────────────────────
+05:46:50 | INFO  | env_info.py |   log_dir: /cephyr/users/maelic/Alvis/.cache/stable-pretraining
+05:46:50 | INFO  | env_info.py |   Running environment dump in background thread (non-blocking)
+05:46:50 | INFO  | env_info.py |   Collecting environment information...
+05:46:50 | OK    | env_info.py | ✓ Background thread started successfully
+05:46:50 | INFO  | trainer_inf~|   linking trainer to DataModule
+05:46:50 | OK    | env_info.py | ✓ Python 3.12.3
+05:46:50 | INFO  | utils.py    | ── Callbacks (in order) ──────────────────────────
+05:46:50 | INFO  | utils.py    |     [ 0] ModelObjectCallBack
+05:46:50 | INFO  | utils.py    |     [ 1] RichProgressBar
+05:46:50 | INFO  | utils.py    |     [ 2] RichModelSummary
+05:46:50 | OK    | env_info.py | ✓ System: Linux 4.18.0-553.123.1.el8_10.0.1.x86_64 (x86_64)
+05:46:50 | INFO  | utils.py    |     [ 3] PrintProgressBar
+05:46:50 | INFO  | utils.py    |     [ 4] ModuleRegistryCallback
+05:46:50 | INFO  | utils.py    |     [ 5] LoggingCallback
+05:46:50 | INFO  | utils.py    |     [ 6] EnvironmentDumpCallback
+05:46:50 | INFO  | utils.py    |     [ 7] TrainerInfo
+05:46:50 | INFO  | utils.py    |     [ 8] SklearnCheckpoint
+05:46:50 | INFO  | utils.py    |     [ 9] WandbCheckpoint
+05:46:50 | INFO  | env_info.py |   Hostname: alvis4-41
+05:46:50 | INFO  | utils.py    |     [10] TrackioCheckpoint
+05:46:50 | INFO  | utils.py    |     [11] SwanLabCheckpoint
+05:46:50 | INFO  | utils.py    |     [12] ModuleSummary
+05:46:50 | INFO  | utils.py    |     [13] SLURMInfo
+05:46:50 | INFO  | utils.py    |     [14] LogUnusedParametersOnce
+05:46:50 | INFO  | utils.py    |     [15] HuggingFaceCheckpointCallback
+05:46:50 | INFO  | utils.py    |     [16] HardwareMonitor
+05:46:50 | INFO  | utils.py    |     [17] ModelCheckpoint
+05:46:50 | INFO  | utils.py    |     [18] _RunDirCallback
+05:46:50 | INFO  | utils.py    |     [19] ModelCheckpoint
+05:46:50 | INFO  | utils.py    |   ⚑ marks order-sensitive callbacks; see AGENTS.md → Callback ordering for the full rules.
+05:46:50 | INFO  | utils.py    | ── SklearnCheckpoint ─────────────────────────────
+05:46:50 | INFO  | checkpoint_~|   Sklearn Modules:
+05:46:50 | INFO  | checkpoint_~| 
+┏━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━┓
+┃ Module   ┃ Name   ┃ Type   ┃
+┣━━━━━━━━━━╋━━━━━━━━╋━━━━━━━━┫
+┗━━━━━━━━━━┻━━━━━━━━┻━━━━━━━━┛
+05:46:50 | INFO  | utils.py    | ── WandbCheckpoint ───────────────────────────────
+05:46:50 | INFO  | utils.py    | ── TrackioCheckpoint ─────────────────────────────
+05:46:50 | INFO  | utils.py    | ── SwanLabCheckpoint ─────────────────────────────
+05:46:50 | INFO  | utils.py    | ── PyTorch Modules ───────────────────────────────
+05:46:50 | WARN  | module.py   | ! You are calling self.parameters which also gives callbacks parameters, to remove them, pass `with_callbacks=False`
+05:46:50 | INFO  | trainer_inf~| \n+-------------------------------------------------------------------+----------------------+--------------------------+--------------------------+---------+
+| Module                                                            | Trainable parameters | Non Trainable parameters | Uninitialized parameters | Buffers |
++-------------------------------------------------------------------+----------------------+--------------------------+--------------------------+---------+
+|                                                                   |             18035178 |                        0 |                        0 |    8245 |
+| callbacks_modules                                                 |                    0 |                        0 |                        0 |       0 |
+| callbacks_metrics                                                 |                    0 |                        0 |                        0 |       0 |
+| model                                                             |             18035178 |                        0 |                        0 |    8194 |
+| model._orig_mod                                                   |             18035178 |                        0 |                        0 |    8194 |
+| model._orig_mod.encoder                                           |              5501376 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.embeddings                                |               162624 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.embeddings.patch_embeddings               |               113088 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.embeddings.patch_embeddings.projection    |               113088 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.embeddings.dropout                        |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers                                    |              5338368 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.0.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.1.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.2.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.3.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.4.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.5.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.6.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.7.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.8.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9                                  |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.attention                        |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.attention.q_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.attention.k_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.attention.v_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.attention.o_proj                 |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.layernorm_before                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.layernorm_after                  |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.mlp                              |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.mlp.activation_fn                |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.mlp.fc1                          |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.mlp.fc2                          |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.9.dropout                          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10                                 |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.attention                       |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.attention.q_proj                |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.attention.k_proj                |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.attention.v_proj                |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.attention.o_proj                |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.layernorm_before                |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.layernorm_after                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.mlp                             |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.mlp.activation_fn               |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.mlp.fc1                         |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.mlp.fc2                         |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.10.dropout                         |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11                                 |               444864 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.attention                       |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.attention.q_proj                |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.attention.k_proj                |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.attention.v_proj                |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.attention.o_proj                |                37056 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.layernorm_before                |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.layernorm_after                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.mlp                             |               295872 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.mlp.activation_fn               |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.mlp.fc1                         |               148224 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.mlp.fc2                         |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layers.11.dropout                         |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.encoder.layernorm                                 |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor                                         |             10791360 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.dropout                                 |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer                             |             10790784 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.norm                        |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers                      |             10790400 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0                    |              1798400 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.attn               |               787008 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.attn.norm          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.attn.attend        |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.attn.to_qkv        |               589824 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.attn.to_out        |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.attn.to_out.0      |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.attn.to_out.1      |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.mlp                |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.mlp.net            |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.mlp.net.0          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.mlp.net.1          |               395264 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.mlp.net.2          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.mlp.net.3          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.mlp.net.4          |               393408 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.mlp.net.5          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.norm1              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.norm2              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.adaLN_modulation   |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.adaLN_modulation.0 |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.0.adaLN_modulation.1 |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1                    |              1798400 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.attn               |               787008 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.attn.norm          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.attn.attend        |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.attn.to_qkv        |               589824 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.attn.to_out        |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.attn.to_out.0      |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.attn.to_out.1      |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.mlp                |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.mlp.net            |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.mlp.net.0          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.mlp.net.1          |               395264 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.mlp.net.2          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.mlp.net.3          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.mlp.net.4          |               393408 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.mlp.net.5          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.norm1              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.norm2              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.adaLN_modulation   |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.adaLN_modulation.0 |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.1.adaLN_modulation.1 |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2                    |              1798400 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.attn               |               787008 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.attn.norm          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.attn.attend        |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.attn.to_qkv        |               589824 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.attn.to_out        |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.attn.to_out.0      |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.attn.to_out.1      |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.mlp                |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.mlp.net            |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.mlp.net.0          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.mlp.net.1          |               395264 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.mlp.net.2          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.mlp.net.3          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.mlp.net.4          |               393408 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.mlp.net.5          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.norm1              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.norm2              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.adaLN_modulation   |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.adaLN_modulation.0 |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.2.adaLN_modulation.1 |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3                    |              1798400 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.attn               |               787008 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.attn.norm          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.attn.attend        |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.attn.to_qkv        |               589824 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.attn.to_out        |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.attn.to_out.0      |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.attn.to_out.1      |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.mlp                |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.mlp.net            |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.mlp.net.0          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.mlp.net.1          |               395264 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.mlp.net.2          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.mlp.net.3          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.mlp.net.4          |               393408 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.mlp.net.5          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.norm1              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.norm2              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.adaLN_modulation   |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.adaLN_modulation.0 |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.3.adaLN_modulation.1 |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4                    |              1798400 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.attn               |               787008 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.attn.norm          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.attn.attend        |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.attn.to_qkv        |               589824 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.attn.to_out        |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.attn.to_out.0      |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.attn.to_out.1      |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.mlp                |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.mlp.net            |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.mlp.net.0          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.mlp.net.1          |               395264 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.mlp.net.2          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.mlp.net.3          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.mlp.net.4          |               393408 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.mlp.net.5          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.norm1              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.norm2              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.adaLN_modulation   |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.adaLN_modulation.0 |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.4.adaLN_modulation.1 |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5                    |              1798400 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.attn               |               787008 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.attn.norm          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.attn.attend        |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.attn.to_qkv        |               589824 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.attn.to_out        |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.attn.to_out.0      |               196800 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.attn.to_out.1      |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.mlp                |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.mlp.net            |               789056 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.mlp.net.0          |                  384 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.mlp.net.1          |               395264 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.mlp.net.2          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.mlp.net.3          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.mlp.net.4          |               393408 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.mlp.net.5          |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.norm1              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.norm2              |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.adaLN_modulation   |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.adaLN_modulation.0 |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.layers.5.adaLN_modulation.1 |               222336 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.input_proj                  |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.cond_proj                   |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.predictor.transformer.output_proj                 |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.action_encoder                                    |               156906 |                        0 |                        0 |       0 |
+| model._orig_mod.action_encoder.patch_embed                        |                  810 |                        0 |                        0 |       0 |
+| model._orig_mod.action_encoder.embed                              |               156096 |                        0 |                        0 |       0 |
+| model._orig_mod.action_encoder.embed.0                            |                 8448 |                        0 |                        0 |       0 |
+| model._orig_mod.action_encoder.embed.1                            |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.action_encoder.embed.2                            |               147648 |                        0 |                        0 |       0 |
+| model._orig_mod.projector                                         |               792768 |                        0 |                        0 |    4097 |
+| model._orig_mod.projector.net                                     |               792768 |                        0 |                        0 |    4097 |
+| model._orig_mod.projector.net.0                                   |               395264 |                        0 |                        0 |       0 |
+| model._orig_mod.projector.net.1                                   |                 4096 |                        0 |                        0 |    4097 |
+| model._orig_mod.projector.net.2                                   |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.projector.net.3                                   |               393408 |                        0 |                        0 |       0 |
+| model._orig_mod.pred_proj                                         |               792768 |                        0 |                        0 |    4097 |
+| model._orig_mod.pred_proj.net                                     |               792768 |                        0 |                        0 |    4097 |
+| model._orig_mod.pred_proj.net.0                                   |               395264 |                        0 |                        0 |       0 |
+| model._orig_mod.pred_proj.net.1                                   |                 4096 |                        0 |                        0 |    4097 |
+| model._orig_mod.pred_proj.net.2                                   |                    0 |                        0 |                        0 |       0 |
+| model._orig_mod.pred_proj.net.3                                   |               393408 |                        0 |                        0 |       0 |
+| sigreg                                                            |                    0 |                        0 |                        0 |      51 |
++-------------------------------------------------------------------+----------------------+--------------------------+--------------------------+---------+
+05:46:50 | INFO  | utils.py    | ── SLURM ─────────────────────────────────────────
+05:46:50 | INFO  | trainer_inf~|   Job ID: 6781858
+05:46:50 | INFO  | trainer_inf~|   Task ID: N/A
+05:46:50 | INFO  | trainer_inf~|   Job Name: jepa_folding
+05:46:50 | INFO  | trainer_inf~|   Nodes: 1
+05:46:50 | INFO  | trainer_inf~|   Tasks: 1
+05:46:50 | INFO  | trainer_inf~|   CPUs per node: 16
+05:46:50 | INFO  | trainer_inf~|   CPUs per task: 16
+05:46:50 | INFO  | trainer_inf~|   Memory per node: 255520
+05:46:50 | INFO  | trainer_inf~|   Memory per CPU: N/A
+05:46:50 | INFO  | trainer_inf~|   Time limit: N/A
+05:46:50 | INFO  | trainer_inf~|   Partition: alvis
+05:46:50 | INFO  | trainer_inf~|   Node List: alvis4-41
+05:46:50 | INFO  | trainer_inf~|   Submit Directory: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+05:46:50 | INFO  | utils.py    | ── HardwareMonitor ───────────────────────────────
+05:46:50 | INFO  | hardware_mo~|   interval: 10.0s
+05:46:50 | INFO  | hardware_mo~|   prefix:   'hardware/'
+05:46:50 | INFO  | hardware_mo~|   metrics:  cpu=True ram=True disk=True net=True gpu=True
+05:46:50 | INFO  | hardware_mo~|   per-rank: rank 0 only
+05:46:50 | WARN  | hardware_mo~| HardwareMonitor: pynvml unavailable (ModuleNotFoundError("No module named 'pynvml'")); GPU metrics disabled.
+05:46:50 | INFO  | utils.py    | ── Optimizers ────────────────────────────────────
+05:46:50 | INFO  | module.py   |   Optimizer specified by Dict with keys ['model_opt']
+05:46:50 | INFO  | module.py   | 
+┏━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Optimizer   ┃ Pattern   ┃   Matched Modules ┃   Param Tensors ┃   Total Params ┃   RequiresGrad Tensors ┃
+┣━━━━━━━━━━━━━╋━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━╋━━━━━━━━━━━━━━━━━━━━━━━━┫
+┃ model_opt   ┃ model     ┃               317 ┃             297 ┃       18035178 ┃                    297 ┃
+┗━━━━━━━━━━━━━┻━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━┻━━━━━━━━━━━━━━━━━━━━━━━━┛
+05:46:50 | INFO  | lr_schedule~| 	User provided a dict
+05:46:51 | OK    | env_info.py | ✓ Packages: 172 packages collected in 1.05s
+05:46:51 | OK    | env_info.py | ✓ NVIDIA Driver: 595.58.03
+05:46:51 | INFO  | module.py   |   Configured optimizer 'model_opt' (modules=317, param_tensors=297, total_params=18035178) with LinearWarmupCosineAnnealingLR scheduler.
+┏━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━┳━━━━━━━┓
+┃   ┃ Name              ┃ Type            ┃ Params ┃ Mode  ┃ FLOPs ┃
+┡━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━╇━━━━━━━┩
+│ 0 │ callbacks_modules │ ModuleDict      │      0 │ train │     0 │
+│ 1 │ callbacks_metrics │ ModuleDict      │      0 │ train │     0 │
+│ 2 │ model             │ OptimizedModule │ 18.0 M │ train │     0 │
+│ 3 │ sigreg            │ SIGReg          │      0 │ train │     0 │
+└───┴───────────────────┴─────────────────┴────────┴───────┴───────┘
+Trainable params: 18.0 M                                                        
+Non-trainable params: 0                                                         
+Total params: 18.0 M                                                            
+Total estimated model params size (MB): 72.141                                  
+Modules in train mode: 320                                                      
+Modules in eval mode: 0                                                         
+Total FLOPs: 0                                                                  
+05:46:51 | INFO  | logger.py   | [RegistryLogger] summary.json flushed (0 metrics, step=0, epoch=0) → /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/054649/209a910d7934/summary.json
+
+05:46:53 | OK    | env_info.py | ✓ Git: main @ 0394f006
+05:46:53 | INFO  | env_info.py |   Remote: https://github.com/Maelic/LeRealWorldModel.git
+05:46:53 | WARN  | env_info.py | ! Working directory has uncommitted changes
+05:46:53 | OK    | env_info.py | ✓ SLURM Job: 6781858
+05:46:53 | INFO  | env_info.py |   Name: jepa_folding
+05:46:53 | INFO  | env_info.py |   Partition: alvis
+05:46:53 | INFO  | env_info.py |   Nodes: 1
+05:46:53 | INFO  | env_info.py |   Tasks: 1
+05:46:53 | OK    | env_info.py | ✓ Environment: 9 relevant variables captured
+05:46:53 | INFO  | env_info.py |   Serializing environment data...
+05:46:53 | INFO  | env_info.py |   Save directory: /cephyr/users/maelic/Alvis/.cache/stable-pretraining
+05:46:53 | INFO  | env_info.py |   Writing environment to temp file...
+05:46:53 | INFO  | env_info.py |   Moving to: environment.json
+05:46:53 | OK    | env_info.py | ✓ Environment file saved (12.5 KB)
+05:46:53 | OK    | env_info.py | ✓ Requirements file saved (3.4 KB)
+
+!!! TRAINER FIT FAILED — RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = self.dataset.__getitems__(possibly_batched_index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/data/datasets.py", line 157, in __getitems__
+    return [self.dataset[self.indices[idx]] for idx in indices]
+            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 28, in __getitem__
+    item = self._ds[idx]
+           ~~~~~~~~^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/data/dataset.py", line 69, in __getitem__
+    steps = self._load_slice(ep_idx, start, start + self.span)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/lewm_robot/data/lerobot_adapter.py", line 236, in _load_slice
+    frames_dict = self._lerobot.reader._query_videos(video_keys_query, global_ep_idx)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 244, in _query_videos
+    frames = decode_video_frames(video_path, shifted_query_ts, self._tolerance_s, self._video_backend)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 152, in decode_video_frames
+    return decode_video_frames_torchcodec(video_path, timestamps, tolerance_s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 336, in decode_video_frames_torchcodec
+    decoder = decoder_cache.get_decoder(str(video_path))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 272, in get_decoder
+    from torchcodec.decoders import VideoDecoder
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/__init__.py", line 12, in <module>
+    from . import decoders, encoders, samplers, transforms  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/decoders/__init__.py", line 7, in <module>
+    from .._core import AudioStreamMetadata, VideoStreamMetadata
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/__init__.py", line 8, in <module>
+    from ._metadata import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/_metadata.py", line 16, in <module>
+    from torchcodec._core.ops import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 109, in <module>
+    ffmpeg_major_version, core_library_path = load_torchcodec_shared_libraries()
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 76, in load_torchcodec_shared_libraries
+    raise RuntimeError(
+RuntimeError: Could not load libtorchcodec. Likely causes:
+          1. FFmpeg is not properly installed in your environment. We support
+             versions 4, 5, 6, 7, and 8, and we attempt to load libtorchcodec
+             for each of those versions. Errors for versions not installed on
+             your system are expected; only the error for your installed FFmpeg
+             version is relevant. On Windows, ensure you've installed the
+             "full-shared" version which ships DLLs.
+          2. The PyTorch version (2.10.0+cu128) is not compatible with
+             this version of TorchCodec. Refer to the version compatibility
+             table:
+             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
+          3. Another runtime dependency; see exceptions below.
+
+        The following exceptions were raised as we tried to load libtorchcodec:
+        
+[start of libtorchcodec loading traceback]
+FFmpeg version 8:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.60: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core8.so
+
+FFmpeg version 7:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.59: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core7.so
+
+FFmpeg version 6:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.58: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core6.so
+
+FFmpeg version 5:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.57: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core5.so
+
+FFmpeg version 4:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.56: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core4.so
+[end of libtorchcodec loading traceback].
+
+    epoch=0/50, global_step=0
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1764, in __call__
+    self._trainer.fit(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 584, in fit
+    call._call_and_handle_interrupt(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/call.py", line 49, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 630, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path, weights_only=weights_only)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1079, in _run
+    results = self._run_stage()
+              ^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1121, in _run_stage
+    self._run_sanity_check()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1150, in _run_sanity_check
+    val_loop.run()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/utilities.py", line 179, in _decorator
+    return loop_run(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/evaluation_loop.py", line 139, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+                                       ^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 134, in __next__
+    batch = super().__next__()
+            ^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 61, in __next__
+    batch = next(self.iterator)
+            ^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+          ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+          ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+           ^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1548, in _next_data
+    return self._process_data(data, worker_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1586, in _process_data
+    data.reraise()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_utils.py", line 775, in reraise
+    raise exception
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = self.dataset.__getitems__(possibly_batched_index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/data/datasets.py", line 157, in __getitems__
+    return [self.dataset[self.indices[idx]] for idx in indices]
+            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 28, in __getitem__
+    item = self._ds[idx]
+           ~~~~~~~~^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/data/dataset.py", line 69, in __getitem__
+    steps = self._load_slice(ep_idx, start, start + self.span)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/lewm_robot/data/lerobot_adapter.py", line 236, in _load_slice
+    frames_dict = self._lerobot.reader._query_videos(video_keys_query, global_ep_idx)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 244, in _query_videos
+    frames = decode_video_frames(video_path, shifted_query_ts, self._tolerance_s, self._video_backend)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 152, in decode_video_frames
+    return decode_video_frames_torchcodec(video_path, timestamps, tolerance_s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 336, in decode_video_frames_torchcodec
+    decoder = decoder_cache.get_decoder(str(video_path))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 272, in get_decoder
+    from torchcodec.decoders import VideoDecoder
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/__init__.py", line 12, in <module>
+    from . import decoders, encoders, samplers, transforms  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/decoders/__init__.py", line 7, in <module>
+    from .._core import AudioStreamMetadata, VideoStreamMetadata
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/__init__.py", line 8, in <module>
+    from ._metadata import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/_metadata.py", line 16, in <module>
+    from torchcodec._core.ops import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 109, in <module>
+    ffmpeg_major_version, core_library_path = load_torchcodec_shared_libraries()
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 76, in load_torchcodec_shared_libraries
+    raise RuntimeError(
+RuntimeError: Could not load libtorchcodec. Likely causes:
+          1. FFmpeg is not properly installed in your environment. We support
+             versions 4, 5, 6, 7, and 8, and we attempt to load libtorchcodec
+             for each of those versions. Errors for versions not installed on
+             your system are expected; only the error for your installed FFmpeg
+             version is relevant. On Windows, ensure you've installed the
+             "full-shared" version which ships DLLs.
+          2. The PyTorch version (2.10.0+cu128) is not compatible with
+             this version of TorchCodec. Refer to the version compatibility
+             table:
+             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
+          3. Another runtime dependency; see exceptions below.
+
+        The following exceptions were raised as we tried to load libtorchcodec:
+        
+[start of libtorchcodec loading traceback]
+FFmpeg version 8:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.60: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core8.so
+
+FFmpeg version 7:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.59: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core7.so
+
+FFmpeg version 6:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.58: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core6.so
+
+FFmpeg version 5:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.57: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core5.so
+
+FFmpeg version 4:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.56: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core4.so
+[end of libtorchcodec loading traceback].
+
+
+05:46:53 | ERROR | manager.py  | Trainer.fit raised — re-raising after loud log
+Traceback (most recent call last):
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 261, in <module>
+    run()
+    └ <function run at 0x1461cb50a980>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+    └ <function _run_hydra at 0x14644167ede0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+    └ <function _run_app at 0x14644167ee80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+    └ <function run_and_report at 0x14644167ed40>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+           └ <function _run_app.<locals>.<lambda> at 0x1461cb52fa60>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+            │     └ <function Hydra.run at 0x146441542160>
+            └ <hydra._internal.hydra.Hydra object at 0x1461d69ea060>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/hydra.py", line 119, in run
+    ret = run_job(
+          └ <function run_job at 0x14644167dd00>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+    │   │              │             └ {'output_model_name': 'lewm_folding_topcam', 'subdir': 'folding_topcam', 'num_workers': 16, 'train_split': 0.9, 'seed': 3072,...
+    │   │              └ <function run at 0x1461cb50aac0>
+    │   └ <property object at 0x146441648360>
+    └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 241, in run
+    manager()
+    └ <stable_pretraining.manager.Manager object at 0x14615fa59f70>
+
+> File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1764, in __call__
+    self._trainer.fit(
+    │    │        └ <function Trainer.fit at 0x1462acdbbec0>
+    │    └ <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>
+    └ <stable_pretraining.manager.Manager object at 0x14615fa59f70>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 584, in fit
+    call._call_and_handle_interrupt(
+    │    └ <function _call_and_handle_interrupt at 0x1462ad092de0>
+    └ <module 'lightning.pytorch.trainer.call' from '/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/s...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/call.py", line 49, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+           │           │       └ {}
+           │           └ (Module(
+           │               (callbacks_modules): ModuleDict()
+           │               (callbacks_metrics): ModuleDict()
+           │               (model): OptimizedModule(
+           │                 (_orig_mod):...
+           └ <bound method Trainer._fit_impl of <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 630, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path, weights_only=weights_only)
+    │    │    │                │                       └ None
+    │    │    │                └ None
+    │    │    └ Module(
+    │    │        (callbacks_modules): ModuleDict()
+    │    │        (callbacks_metrics): ModuleDict()
+    │    │        (model): OptimizedModule(
+    │    │          (_orig_mod): ...
+    │    └ <function Trainer._run at 0x1462acde4860>
+    └ <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1079, in _run
+    results = self._run_stage()
+              │    └ <function Trainer._run_stage at 0x1462acde49a0>
+              └ <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1121, in _run_stage
+    self._run_sanity_check()
+    │    └ <function Trainer._run_sanity_check at 0x1462acde4a40>
+    └ <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1150, in _run_sanity_check
+    val_loop.run()
+    │        └ <function _no_grad_context.<locals>._decorator at 0x1462acf69c60>
+    └ <lightning.pytorch.loops.evaluation_loop._EvaluationLoop object at 0x14615f14d610>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/utilities.py", line 179, in _decorator
+    return loop_run(self, *args, **kwargs)
+           │        │      │       └ {}
+           │        │      └ ()
+           │        └ <lightning.pytorch.loops.evaluation_loop._EvaluationLoop object at 0x14615f14d610>
+           └ <function _EvaluationLoop.run at 0x1462acf69bc0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/evaluation_loop.py", line 139, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+                                            └ <lightning.pytorch.loops.fetchers._PrefetchDataFetcher object at 0x14615f03f5c0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 134, in __next__
+    batch = super().__next__()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 61, in __next__
+    batch = next(self.iterator)
+                 │    └ None
+                 └ <lightning.pytorch.loops.fetchers._PrefetchDataFetcher object at 0x14615f03f5c0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+               │    └ None
+               └ <lightning.pytorch.utilities.combined_loader.CombinedLoader object at 0x14615ff926c0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+               │    └ []
+               └ <lightning.pytorch.utilities.combined_loader._Sequential object at 0x14615f03f830>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+           │    └ <function _MultiProcessingDataLoaderIter._next_data at 0x1462fc4ff9c0>
+           └ <torch.utils.data.dataloader._MultiProcessingDataLoaderIter object at 0x14615f1e2a80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1548, in _next_data
+    return self._process_data(data, worker_id)
+           │    │             │     └ 0
+           │    │             └ <torch._utils.ExceptionWrapper object at 0x14615f0ce5d0>
+           │    └ <function _MultiProcessingDataLoaderIter._process_data at 0x1462fc4ffb00>
+           └ <torch.utils.data.dataloader._MultiProcessingDataLoaderIter object at 0x14615f1e2a80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1586, in _process_data
+    data.reraise()
+    │    └ <function ExceptionWrapper.reraise at 0x146440413b00>
+    └ <torch._utils.ExceptionWrapper object at 0x14615f0ce5d0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_utils.py", line 775, in reraise
+    raise exception
+          └ RuntimeError('Caught RuntimeError in DataLoader worker process 0.\nOriginal Traceback (most recent call last):\n  File "/mime...
+
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = self.dataset.__getitems__(possibly_batched_index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/data/datasets.py", line 157, in __getitems__
+    return [self.dataset[self.indices[idx]] for idx in indices]
+            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 28, in __getitem__
+    item = self._ds[idx]
+           ~~~~~~~~^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/data/dataset.py", line 69, in __getitem__
+    steps = self._load_slice(ep_idx, start, start + self.span)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/lewm_robot/data/lerobot_adapter.py", line 236, in _load_slice
+    frames_dict = self._lerobot.reader._query_videos(video_keys_query, global_ep_idx)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 244, in _query_videos
+    frames = decode_video_frames(video_path, shifted_query_ts, self._tolerance_s, self._video_backend)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 152, in decode_video_frames
+    return decode_video_frames_torchcodec(video_path, timestamps, tolerance_s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 336, in decode_video_frames_torchcodec
+    decoder = decoder_cache.get_decoder(str(video_path))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 272, in get_decoder
+    from torchcodec.decoders import VideoDecoder
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/__init__.py", line 12, in <module>
+    from . import decoders, encoders, samplers, transforms  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/decoders/__init__.py", line 7, in <module>
+    from .._core import AudioStreamMetadata, VideoStreamMetadata
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/__init__.py", line 8, in <module>
+    from ._metadata import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/_metadata.py", line 16, in <module>
+    from torchcodec._core.ops import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 109, in <module>
+    ffmpeg_major_version, core_library_path = load_torchcodec_shared_libraries()
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 76, in load_torchcodec_shared_libraries
+    raise RuntimeError(
+RuntimeError: Could not load libtorchcodec. Likely causes:
+          1. FFmpeg is not properly installed in your environment. We support
+             versions 4, 5, 6, 7, and 8, and we attempt to load libtorchcodec
+             for each of those versions. Errors for versions not installed on
+             your system are expected; only the error for your installed FFmpeg
+             version is relevant. On Windows, ensure you've installed the
+             "full-shared" version which ships DLLs.
+          2. The PyTorch version (2.10.0+cu128) is not compatible with
+             this version of TorchCodec. Refer to the version compatibility
+             table:
+             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
+          3. Another runtime dependency; see exceptions below.
+
+        The following exceptions were raised as we tried to load libtorchcodec:
+        
+[start of libtorchcodec loading traceback]
+FFmpeg version 8:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.60: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core8.so
+
+FFmpeg version 7:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.59: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core7.so
+
+FFmpeg version 6:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.58: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core6.so
+
+FFmpeg version 5:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.57: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core5.so
+
+FFmpeg version 4:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.56: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core4.so
+[end of libtorchcodec loading traceback].
+
+05:46:53 | INFO  | utils.py    | ── SignalHandlers (after Trainer.fit() raised) ───
+05:46:53 | INFO  | manager.py  |   SIGUSR1  → SIG_DFL (default OS action — terminate process)
+05:46:53 | INFO  | manager.py  |   SIGUSR2  → SIG_DFL (default OS action — terminate process)
+05:46:53 | INFO  | manager.py  |   SIGCONT  → SIG_DFL (default OS action — terminate process)
+05:46:53 | INFO  | manager.py  |   SIGTERM  → <stable_pretraining.manager._install_sigterm_preempt_handler.<locals>._handler> [spt]
+05:46:53 | ERROR | richuru.py  | Exception:
+Traceback (most recent call last):
+
+> File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 261, in <module>
+    run()
+    └ <function run at 0x1461cb50a980>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+    └ <function _run_hydra at 0x14644167ede0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+    └ <function _run_app at 0x14644167ee80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+    └ <function run_and_report at 0x14644167ed40>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+           └ <function _run_app.<locals>.<lambda> at 0x1461cb52fa60>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+            │     └ <function Hydra.run at 0x146441542160>
+            └ <hydra._internal.hydra.Hydra object at 0x1461d69ea060>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+        │   └ <property object at 0x146441648360>
+        └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+          │    └ RuntimeError('Caught RuntimeError in DataLoader worker process 0.\nOriginal Traceback (most recent call last):\n  File "/mime...
+          └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+    │   │              │             └ {'output_model_name': 'lewm_folding_topcam', 'subdir': 'folding_topcam', 'num_workers': 16, 'train_split': 0.9, 'seed': 3072,...
+    │   │              └ <function run at 0x1461cb50aac0>
+    │   └ <property object at 0x146441648360>
+    └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 241, in run
+    manager()
+    └ <stable_pretraining.manager.Manager object at 0x14615fa59f70>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1764, in __call__
+    self._trainer.fit(
+    │    │        └ <function Trainer.fit at 0x1462acdbbec0>
+    │    └ <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>
+    └ <stable_pretraining.manager.Manager object at 0x14615fa59f70>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 584, in fit
+    call._call_and_handle_interrupt(
+    │    └ <function _call_and_handle_interrupt at 0x1462ad092de0>
+    └ <module 'lightning.pytorch.trainer.call' from '/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/s...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/call.py", line 49, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+           │           │       └ {}
+           │           └ (Module(
+           │               (callbacks_modules): ModuleDict()
+           │               (callbacks_metrics): ModuleDict()
+           │               (model): OptimizedModule(
+           │                 (_orig_mod):...
+           └ <bound method Trainer._fit_impl of <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 630, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path, weights_only=weights_only)
+    │    │    │                │                       └ None
+    │    │    │                └ None
+    │    │    └ Module(
+    │    │        (callbacks_modules): ModuleDict()
+    │    │        (callbacks_metrics): ModuleDict()
+    │    │        (model): OptimizedModule(
+    │    │          (_orig_mod): ...
+    │    └ <function Trainer._run at 0x1462acde4860>
+    └ <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1079, in _run
+    results = self._run_stage()
+              │    └ <function Trainer._run_stage at 0x1462acde49a0>
+              └ <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1121, in _run_stage
+    self._run_sanity_check()
+    │    └ <function Trainer._run_sanity_check at 0x1462acde4a40>
+    └ <lightning.pytorch.trainer.trainer.Trainer object at 0x14615f8b3350>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/trainer/trainer.py", line 1150, in _run_sanity_check
+    val_loop.run()
+    │        └ <function _no_grad_context.<locals>._decorator at 0x1462acf69c60>
+    └ <lightning.pytorch.loops.evaluation_loop._EvaluationLoop object at 0x14615f14d610>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/utilities.py", line 179, in _decorator
+    return loop_run(self, *args, **kwargs)
+           │        │      │       └ {}
+           │        │      └ ()
+           │        └ <lightning.pytorch.loops.evaluation_loop._EvaluationLoop object at 0x14615f14d610>
+           └ <function _EvaluationLoop.run at 0x1462acf69bc0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/evaluation_loop.py", line 139, in run
+    batch, batch_idx, dataloader_idx = next(data_fetcher)
+                                            └ <lightning.pytorch.loops.fetchers._PrefetchDataFetcher object at 0x14615f03f5c0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 134, in __next__
+    batch = super().__next__()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/loops/fetchers.py", line 61, in __next__
+    batch = next(self.iterator)
+                 │    └ None
+                 └ <lightning.pytorch.loops.fetchers._PrefetchDataFetcher object at 0x14615f03f5c0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 341, in __next__
+    out = next(self._iterator)
+               │    └ None
+               └ <lightning.pytorch.utilities.combined_loader.CombinedLoader object at 0x14615ff926c0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/pytorch/utilities/combined_loader.py", line 142, in __next__
+    out = next(self.iterators[0])
+               │    └ []
+               └ <lightning.pytorch.utilities.combined_loader._Sequential object at 0x14615f03f830>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+           │    └ <function _MultiProcessingDataLoaderIter._next_data at 0x1462fc4ff9c0>
+           └ <torch.utils.data.dataloader._MultiProcessingDataLoaderIter object at 0x14615f1e2a80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1548, in _next_data
+    return self._process_data(data, worker_id)
+           │    │             │     └ 0
+           │    │             └ <torch._utils.ExceptionWrapper object at 0x14615f0ce5d0>
+           │    └ <function _MultiProcessingDataLoaderIter._process_data at 0x1462fc4ffb00>
+           └ <torch.utils.data.dataloader._MultiProcessingDataLoaderIter object at 0x14615f1e2a80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1586, in _process_data
+    data.reraise()
+    │    └ <function ExceptionWrapper.reraise at 0x146440413b00>
+    └ <torch._utils.ExceptionWrapper object at 0x14615f0ce5d0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_utils.py", line 775, in reraise
+    raise exception
+          └ RuntimeError('Caught RuntimeError in DataLoader worker process 0.\nOriginal Traceback (most recent call last):\n  File "/mime...
+
+RuntimeError: Caught RuntimeError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 52, in fetch
+    data = self.dataset.__getitems__(possibly_batched_index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/data/datasets.py", line 157, in __getitems__
+    return [self.dataset[self.indices[idx]] for idx in indices]
+            ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 28, in __getitem__
+    item = self._ds[idx]
+           ~~~~~~~~^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/data/dataset.py", line 69, in __getitem__
+    steps = self._load_slice(ep_idx, start, start + self.span)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/lewm_robot/data/lerobot_adapter.py", line 236, in _load_slice
+    frames_dict = self._lerobot.reader._query_videos(video_keys_query, global_ep_idx)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 244, in _query_videos
+    frames = decode_video_frames(video_path, shifted_query_ts, self._tolerance_s, self._video_backend)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 152, in decode_video_frames
+    return decode_video_frames_torchcodec(video_path, timestamps, tolerance_s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 336, in decode_video_frames_torchcodec
+    decoder = decoder_cache.get_decoder(str(video_path))
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 272, in get_decoder
+    from torchcodec.decoders import VideoDecoder
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/__init__.py", line 12, in <module>
+    from . import decoders, encoders, samplers, transforms  # noqa
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/decoders/__init__.py", line 7, in <module>
+    from .._core import AudioStreamMetadata, VideoStreamMetadata
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/__init__.py", line 8, in <module>
+    from ._metadata import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/_metadata.py", line 16, in <module>
+    from torchcodec._core.ops import (
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 109, in <module>
+    ffmpeg_major_version, core_library_path = load_torchcodec_shared_libraries()
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 76, in load_torchcodec_shared_libraries
+    raise RuntimeError(
+RuntimeError: Could not load libtorchcodec. Likely causes:
+          1. FFmpeg is not properly installed in your environment. We support
+             versions 4, 5, 6, 7, and 8, and we attempt to load libtorchcodec
+             for each of those versions. Errors for versions not installed on
+             your system are expected; only the error for your installed FFmpeg
+             version is relevant. On Windows, ensure you've installed the
+             "full-shared" version which ships DLLs.
+          2. The PyTorch version (2.10.0+cu128) is not compatible with
+             this version of TorchCodec. Refer to the version compatibility
+             table:
+             https://github.com/pytorch/torchcodec?tab=readme-ov-file#installing-torchcodec.
+          3. Another runtime dependency; see exceptions below.
+
+        The following exceptions were raised as we tried to load libtorchcodec:
+        
+[start of libtorchcodec loading traceback]
+FFmpeg version 8:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.60: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core8.so
+
+FFmpeg version 7:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.59: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core7.so
+
+FFmpeg version 6:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.58: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core6.so
+
+FFmpeg version 5:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.57: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core5.so
+
+FFmpeg version 4:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1442, in load_library
+    ctypes.CDLL(path)
+  File "/apps/Arch/software/Python/3.12.3-GCCcore-13.3.0/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: libavutil.so.56: cannot open shared object file: No such file or directory
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/_core/ops.py", line 57, in load_torchcodec_shared_libraries
+    torch.ops.load_library(core_library_path)
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_ops.py", line 1444, in load_library
+    raise OSError(f"Could not load this library: {path}") from e
+OSError: Could not load this library: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torchcodec/libtorchcodec_core4.so
+[end of libtorchcodec loading traceback].
+
+[1;34mwandb[0m: 
+[1;34mwandb[0m: You can sync this run to the cloud by running:
+[1;34mwandb[0m: [1mwandb sync wandb/offline-run-20260628_054648-folding_topcam[0m

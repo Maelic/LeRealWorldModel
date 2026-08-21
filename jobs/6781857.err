@@ -1,0 +1,4 @@
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/envs/__init__.py:215: UserWarning: ale-py not found; ALE/* envs are unavailable. Install with: pip install 'stable-worldmodel[env]' or pip install ale-py.
+  from stable_worldmodel.envs import ale  # noqa: F401
+Error executing job with overrides: ['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=3e-4']
+srun: error: alvis4-41: task 0: Exited with exit code 1

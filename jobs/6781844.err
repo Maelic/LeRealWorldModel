@@ -1,0 +1,11 @@
+Lmod has detected the following error: Attempted to load GCCcore/13.3.0 but
+GCCcore/12.3.0 was already loaded.
+
+For more info, see
+https://www.c3se.chalmers.se/documentation/module_system/modules/#finding-compatible-software
+
+While processing the following module(s):
+    Module fullname               Module Filename
+    ---------------               ---------------
+    Python/3.12.3-GCCcore-13.3.0  /apps/Arch/fmodules/all/Python/3.12.3-GCCcore-13.3.0.lua
+

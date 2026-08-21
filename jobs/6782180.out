@@ -1,0 +1,43 @@
+This job can be monitored from: https://job.c3se.chalmers.se/alvis/6782180
+============================================================
+  Decoder training — folding JEPA (base cam)
+  HPC_REPO     = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+  SRC CKPT     = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam/lewm_folding_topcam_latest_object.ckpt
+  FROZEN COPY  = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam/decoder_src_6782180.ckpt
+  RUN_DIR      = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam
+  NUM_EPISODES = 60   STEPS = 20000   BATCH = 256
+  EMB_WORKERS  = 16
+  NODE         = alvis4-41   JOB = 6782180
+  GPU          = NVIDIA A100-SXM4-80GB, 81920 MiB
+============================================================
+15:08:22 | INFO  | atomic_chec~| [atomic_save] installed crash-safe checkpoint plugin (write to sibling .tmp + fsync + atomic rename)
+15:08:22 | INFO  | __init__.py | Cuda backend detected, using cuda.
+15:08:22 | WARN  | __init__.py | Device 'None' is not available. Switching to 'cuda'.
+15:08:22 | INFO  | utils.py    | Created ViT-tiny from scratch with config: {'hidden_size': 192, 'num_hidden_layers': 12, 'num_attention_heads': 3, 'intermediate_size': 768, 'image_size': 224, 'patch_size': 14}
+15:08:23 | ERROR | richuru.py  | Exception:
+Traceback (most recent call last):
+
+> File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_jepa_decoder.py", line 688, in <module>
+    main()
+    └ <function main at 0x14e10b21c2c0>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_jepa_decoder.py", line 443, in main
+    world_model.load_state_dict(loaded.state_dict())
+    │           │               │      └ <function Module.state_dict at 0x14e23cefaac0>
+    │           │               └ JEPA(
+    │           │                   (encoder): ViTModel(
+    │           │                     (embeddings): ViTEmbeddings(
+    │           │                       (patch_embeddings): ViTPatchEmbeddings(
+    │           │                         (projecti...
+    │           └ <function Module.load_state_dict at 0x14e23cefade0>
+    └ JEPA(
+        (encoder): ViTModel(
+          (embeddings): ViTEmbeddings(
+            (patch_embeddings): ViTPatchEmbeddings(
+              (projecti...
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/nn/modules/module.py", line 2635, in load_state_dict
+    raise RuntimeError(
+
+RuntimeError: Error(s) in loading state_dict for JEPA:
+	size mismatch for action_encoder.patch_embed.weight: copying a param with shape torch.Size([10, 80, 1]) from checkpoint, the shape in current model is torch.Size([10, 30, 1]).

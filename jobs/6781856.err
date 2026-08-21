@@ -1,0 +1,82 @@
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_worldmodel/envs/__init__.py:215: UserWarning: ale-py not found; ALE/* envs are unavailable. Install with: pip install 'stable-worldmodel[env]' or pip install ale-py.
+  from stable_worldmodel.envs import ale  # noqa: F401
+Using custom data configuration default-0d82af4f36087119
+Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-0d82af4f36087119/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+Using custom data configuration default-63e228ed67ba0811
+Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-63e228ed67ba0811/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+wandb: WARNING The anonymous setting has no effect and will be removed in a future version.
+wandb: WARNING `resume` will be ignored since W&B syncing is set to `offline`. Starting a new run with run id folding_topcam.
+wandb: Tracking run with wandb version 0.24.2
+wandb: W&B syncing is set to `offline` in this directory. Run `wandb online` or set WANDB_MODE=online to enable cloud syncing.
+wandb: Run data is saved locally in wandb/offline-run-20260628_031143-folding_topcam
+Using bfloat16 Automatic Mixed Precision (AMP)
+Adding 14 callbacks from entry point 'stablepretraining_callbacks': PrintProgressBar, ModuleRegistryCallback, LoggingCallback, EnvironmentDumpCallback, TrainerInfo, SklearnCheckpoint, WandbCheckpoint, TrackioCheckpoint, SwanLabCheckpoint, ModuleSummary, SLURMInfo, LogUnusedParametersOnce, HuggingFaceCheckpointCallback, HardwareMonitor
+GPU available: True (cuda), used: True
+TPU available: False, using: 0 TPU cores
+💡 Tip: For seamless cloud logging and experiment tracking, try installing [litlogger](https://pypi.org/project/litlogger/) to enable LitLogger, which logs metrics and artifacts automatically to the Lightning Experiments platform.
+/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning/fabric/utilities/seed.py:44: No seed found, seed set to 0
+[rank: 0] Seed set to 0
+
+================================================================================
+💥 EXCEPTION CAUGHT
+================================================================================
+Type: TypeError
+Message: unsupported operand type(s) for /: 'NoneType' and 'str'
+================================================================================
+TRACEBACK:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/utils/error_handling.py", line 30, in catch_errors
+    yield
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/utils/error_handling.py", line 72, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning_utilities/core/rank_zero.py", line 42, in wrapped_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1517, in init_and_sync_wandb
+    with open(previous_run / "files/wandb-config.json", "r") as f:
+              ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'NoneType' and 'str'
+================================================================================
+
+Error executing job with overrides: ['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=3e-4']
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 261, in <module>
+    run()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+           ^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+            ^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+        ^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+                       ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 241, in run
+    manager()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1688, in __call__
+    self.init_and_sync_wandb()
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/utils/error_handling.py", line 72, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning_utilities/core/rank_zero.py", line 42, in wrapped_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1517, in init_and_sync_wandb
+    with open(previous_run / "files/wandb-config.json", "r") as f:
+              ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for /: 'NoneType' and 'str'
+srun: error: alvis4-41: task 0: Exited with exit code 1

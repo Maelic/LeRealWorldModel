@@ -1,0 +1,22 @@
+This job can be monitored from: https://job.c3se.chalmers.se/alvis/6782267
+============================================================
+  Decoder training — folding JEPA (base cam)
+  HPC_REPO     = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+  SRC CKPT     = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam/lewm_folding_topcam_latest_object.ckpt
+  FROZEN COPY  = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam/decoder_src_6782267.ckpt
+  RUN_DIR      = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam
+  NUM_EPISODES = 60   STEPS = 20000   BATCH = 256
+  EMB_WORKERS  = 16
+  NODE         = alvis4-41   JOB = 6782267
+  GPU          = NVIDIA A100-SXM4-80GB, 81920 MiB
+============================================================
+16:40:59 | INFO  | atomic_chec~| [atomic_save] installed crash-safe checkpoint plugin (write to sibling .tmp + fsync + atomic rename)
+Loaded world model from /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam/decoder_src_6782267.ckpt
+16:40:59 | INFO  | __init__.py | Using video codec: libsvtav1
+16:40:59 | INFO  | __init__.py | Using custom data configuration default-0d82af4f36087119
+16:40:59 | INFO  | __init__.py | Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-0d82af4f36087119/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+16:40:59 | INFO  | __init__.py | Using custom data configuration default-ee645ac7b62ef42d
+16:40:59 | INFO  | __init__.py | Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-ee645ac7b62ef42d/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+Loaded first 60 episodes (120805 frames)
+Decoding only 'observation.images.base'; dropped video keys: ['observation.images.left_wrist', 'observation.images.right_wrist']
+Pre-computing embeddings for 120805 frames…

@@ -1,0 +1,162 @@
+This job can be monitored from: https://job.c3se.chalmers.se/alvis/6781876
+============================================================
+  Stage 1: JEPA world model — cloth folding (base cam)
+  HPC_REPO   = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+  HF_HOME    = /mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface
+  CONFIG     = lewm_folding_topcam
+  BATCH_SIZE = 512   EPOCHS = 50
+  EPISODES   = <full dataset>   LR = 3e-4
+  HF_HUB_OFFLINE=1   WANDB_MODE=offline
+  NODE       = alvis3-42
+  SLURM_JOB_ID = 6781876   CPUS = 16
+  GPU        = NVIDIA A100-SXM4-80GB, 81920 MiB
+============================================================
+
+--- GPU state before training ---
+Sun Jun 28 09:59:49 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.58.03              Driver Version: 595.58.03      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:4B:00.0 Off |                    0 |
+| N/A   28C    P0             61W /  500W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+--- Starting training ---
+python train_lewm.py --config-name lewm_folding_topcam loader.batch_size=512 num_workers=8 trainer.max_epochs=50 wandb.enabled=false optimizer.lr=3e-4 num_workers=16 compile=False ckpt_step_interval=500
+10:00:23 | INFO  | atomic_chec~| [atomic_save] installed crash-safe checkpoint plugin (write to sibling .tmp + fsync + atomic rename)
+10:00:23 | ERROR | richuru.py  | Exception:
+Traceback (most recent call last):
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/config_loader_impl.py", line 390, in _apply_overrides_to_config
+    OmegaConf.update(cfg, key, value, merge=True)
+    │         │      │    │    └ 500
+    │         │      │    └ 'ckpt_step_interval'
+    │         │      └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+    │         └ <staticmethod(<function OmegaConf.update at 0x14cc34d43880>)>
+    └ <class 'omegaconf.omegaconf.OmegaConf'>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/omegaconf.py", line 741, in update
+    root.__setattr__(last_key, value)
+    │    │           │         └ 500
+    │    │           └ 'ckpt_step_interval'
+    │    └ <function DictConfig.__setattr__ at 0x14cc34d1b6a0>
+    └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/dictconfig.py", line 337, in __setattr__
+    raise e
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/dictconfig.py", line 334, in __setattr__
+    self.__set_impl(key, value)
+    │               │    └ 500
+    │               └ 'ckpt_step_interval'
+    └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/dictconfig.py", line 318, in __set_impl
+    self._set_item_impl(key, value)
+    │    │              │    └ 500
+    │    │              └ 'ckpt_step_interval'
+    │    └ <function BaseContainer._set_item_impl at 0x14cc34d18180>
+    └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/basecontainer.py", line 549, in _set_item_impl
+    self._validate_set(key, value)
+    │    │             │    └ 500
+    │    │             └ 'ckpt_step_interval'
+    │    └ <function DictConfig._validate_set at 0x14cc34d1b100>
+    └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/dictconfig.py", line 180, in _validate_set
+    target = self._get_node(key) if key is not None else self
+             │    │         │       │                    └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+             │    │         │       └ 'ckpt_step_interval'
+             │    │         └ 'ckpt_step_interval'
+             │    └ <function DictConfig._get_node at 0x14cc34d1bb00>
+             └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/dictconfig.py", line 475, in _get_node
+    self._validate_get(key)
+    │    │             └ 'ckpt_step_interval'
+    │    └ <function DictConfig._validate_get at 0x14cc34d1b060>
+    └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/dictconfig.py", line 164, in _validate_get
+    self._format_and_raise(
+    │    └ <function Node._format_and_raise at 0x14cc34ce60c0>
+    └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/base.py", line 231, in _format_and_raise
+    format_and_raise(
+    └ <function format_and_raise at 0x14cc34cfc040>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/_utils.py", line 899, in format_and_raise
+    _raise(ex, cause)
+    │      │   └ ConfigAttributeError("Key 'ckpt_step_interval' is not in struct")
+    │      └ ConfigAttributeError("Key 'ckpt_step_interval' is not in struct\n    full_key: ckpt_step_interval\n    object_type=dict")
+    └ <function _raise at 0x14cc34cfbf60>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/omegaconf/_utils.py", line 797, in _raise
+    raise ex.with_traceback(sys.exc_info()[2])  # set env var OC_CAUSE=1 for full trace
+          │  │              │   └ <built-in function exc_info>
+          │  │              └ <module 'sys' (built-in)>
+          │  └ <method 'with_traceback' of 'BaseException' objects>
+          └ ConfigAttributeError("Key 'ckpt_step_interval' is not in struct\n    full_key: ckpt_step_interval\n    object_type=dict")
+
+omegaconf.errors.ConfigAttributeError: Key 'ckpt_step_interval' is not in struct
+    full_key: ckpt_step_interval
+    object_type=dict
+
+
+The above exception was the direct cause of the following exception:
+
+
+Traceback (most recent call last):
+
+> File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 262, in <module>
+    run()
+    └ <function run at 0x14c9bed26b60>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+    └ <function _run_hydra at 0x14cc34aeaf20>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+    └ <function _run_app at 0x14cc34aeafc0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+    └ <function run_and_report at 0x14cc34aeae80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+           └ <function _run_app.<locals>.<lambda> at 0x14c9bed43c40>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+            │     └ <function Hydra.run at 0x14cc349aa2a0>
+            └ <hydra._internal.hydra.Hydra object at 0x14c9bec85b20>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/hydra.py", line 105, in run
+    cfg = self.compose_config(
+          │    └ <function Hydra.compose_config at 0x14cc349aafc0>
+          └ <hydra._internal.hydra.Hydra object at 0x14c9bec85b20>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/hydra.py", line 594, in compose_config
+    cfg = self.config_loader.load_configuration(
+          │    │             └ <function ConfigLoaderImpl.load_configuration at 0x14cc349a9760>
+          │    └ <hydra._internal.config_loader_impl.ConfigLoaderImpl object at 0x14c9ca146c60>
+          └ <hydra._internal.hydra.Hydra object at 0x14c9bec85b20>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/config_loader_impl.py", line 142, in load_configuration
+    return self._load_configuration_impl(
+           │    └ <function ConfigLoaderImpl._load_configuration_impl at 0x14cc349a9940>
+           └ <hydra._internal.config_loader_impl.ConfigLoaderImpl object at 0x14c9ca146c60>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/config_loader_impl.py", line 276, in _load_configuration_impl
+    ConfigLoaderImpl._apply_overrides_to_config(config_overrides, cfg)
+    │                │                          │                 └ {'hydra': {'run': {'dir': 'outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}'}, 'sweep': {'dir': 'multirun/${now:%Y-%m-%d}/${now:%H-%M-...
+    │                │                          └ [Override(type=<OverrideType.CHANGE: 1>, key_or_group='loader.batch_size', value_type=<ValueType.ELEMENT: 1>, _value=512, pac...
+    │                └ <staticmethod(<function ConfigLoaderImpl._apply_overrides_to_config at 0x14cc349a9b20>)>
+    └ <class 'hydra._internal.config_loader_impl.ConfigLoaderImpl'>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/config_loader_impl.py", line 392, in _apply_overrides_to_config
+    raise ConfigCompositionException(
+          └ <class 'hydra.errors.ConfigCompositionException'>
+
+hydra.errors.ConfigCompositionException: Could not override 'ckpt_step_interval'.
+To append to your config use +ckpt_step_interval=500

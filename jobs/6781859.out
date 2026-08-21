@@ -1,0 +1,213 @@
+This job can be monitored from: https://job.c3se.chalmers.se/alvis/6781859
+============================================================
+  Stage 1: JEPA world model — cloth folding (base cam)
+  HPC_REPO   = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+  HF_HOME    = /mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface
+  CONFIG     = lewm_folding_topcam
+  BATCH_SIZE = 512   EPOCHS = 50
+  EPISODES   = <full dataset>   LR = 3e-4
+  HF_HUB_OFFLINE=1   WANDB_MODE=offline
+  NODE       = alvis4-41
+  SLURM_JOB_ID = 6781859   CPUS = 16
+  GPU        = NVIDIA A100-SXM4-80GB, 81920 MiB
+============================================================
+
+--- GPU state before training ---
+Sun Jun 28 06:09:56 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.58.03              Driver Version: 595.58.03      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-SXM4-80GB          On  |   00000000:4B:00.0 Off |                    0 |
+| N/A   26C    P0             60W /  500W |       0MiB /  81920MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+
+--- Starting training ---
+python train_lewm.py --config-name lewm_folding_topcam loader.batch_size=512 num_workers=16 trainer.max_epochs=50 wandb.enabled=true optimizer.lr=3e-4
+06:10:22 | INFO  | atomic_chec~| [atomic_save] installed crash-safe checkpoint plugin (write to sibling .tmp + fsync + atomic rename)
+[2026-06-28 06:10:22,839][lerobot.datasets.video_utils][INFO] - Using video codec: libsvtav1
+[2026-06-28 06:10:22,861][datasets.builder][INFO] - Using custom data configuration default-0d82af4f36087119
+[2026-06-28 06:10:22,936][datasets.builder][INFO] - Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-0d82af4f36087119/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+[2026-06-28 06:10:23,067][datasets.builder][INFO] - Using custom data configuration default-63e228ed67ba0811
+[2026-06-28 06:10:23,074][datasets.builder][INFO] - Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-63e228ed67ba0811/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+06:21:16 | INFO  | utils.py    | Created ViT-tiny from scratch with config: {'hidden_size': 192, 'num_hidden_layers': 12, 'num_attention_heads': 3, 'intermediate_size': 768, 'image_size': 224, 'patch_size': 14}
+06:21:17 | INFO  | module.py   | Setting up DataModule
+06:21:17 | INFO  | utils.py    | ── Module ────────────────────────────────────────
+06:21:17 | WARN  | module.py   | ! No hyperparameters provided - hyperparameter logging is disabled.
+06:21:17 | INFO  | module.py   |   Setting custom forward method.
+06:21:17 | INFO  | module.py   |   Setting attribute: self.model = <class 'torch._dynamo.eval_frame.OptimizedModule'>
+06:21:17 | INFO  | module.py   |   Setting attribute: self.sigreg = <class 'module.SIGReg'>
+06:21:17 | INFO  | module.py   |   Setting attribute: self.optim = <class 'dict'>
+06:21:17 | INFO  | module.py   |   No metrics configuration provided - automatic metric tracking is disabled.
+06:21:19 | INFO  | env_info.py |   EnvironmentDumpCallback initialized (filename=environment.json, async=True)
+06:21:19 | INFO  | utils.py    | ── HuggingFaceCheckpoint ─────────────────────────
+06:21:19 | INFO  | hf_models.py|   save_dir: <cyan>hf_exports</cyan>
+06:21:19 | INFO  | hf_models.py|   per_step: <cyan>False</cyan>  (False ⇒ overwrite single 'last/' subdir; True ⇒ keep step_N/)
+06:21:19 | INFO  | utils.py    | ── SIGTERM preempt handler — install ─────────────
+06:21:19 | INFO  | manager.py  |   SLURM_JOB_ID         = '6781859'
+06:21:19 | INFO  | manager.py  |   SLURM_RESTART_COUNT  = '0'
+06:21:19 | INFO  | manager.py  |   SLURM_PROCID         = '0'
+06:21:19 | INFO  | manager.py  |   SLURM_NODEID         = '0'
+06:21:19 | INFO  | manager.py  |   submitit preempt signal = SIGUSR2 (signum=12; source: submitit default (USR2))
+06:21:19 | INFO  | manager.py  |   prior SIGTERM handler   = SIG_DFL (default OS action — terminate process)
+06:21:19 | INFO  | manager.py  |   prior SIGUSR2 handler   = SIG_DFL (default OS action — terminate process)
+06:21:19 | WARN  | manager.py  |   ! SIGUSR2 has no callable handler — submitit may not have installed its SignalHandler yet. Forwarding SIGTERM to it will hit the OS default action instead of checkpoint_and_try_requeue. Requeue will likely NOT happen.
+06:21:19 | OK    | manager.py  |   ✓ Installed pre-fit SIGTERM handler: <stable_pretraining.manager._install_sigterm_preempt_handler.<locals>._handler> [spt]
+06:21:19 | INFO  | manager.py  |     → forwards to SIGUSR2 on receipt; lightning's _SignalConnector will compose this handler into its chain (notifier → bypass → ours) when Trainer.fit() runs.
+06:21:19 | WARN  | manager.py  | User didn't specify seed, runs won't be exactly reproducible!
+06:21:19 | INFO  | manager.py  |   Manager init: ckpt_path=None, weights_only=True
+06:21:19 | INFO  | utils.py    | ── WorkingDirectory ──────────────────────────────
+06:21:19 | INFO  | manager.py  |   cwd: /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+06:21:19 | INFO  | utils.py    | ── Seed ──────────────────────────────────────────
+06:21:19 | INFO  | manager.py  |   seed: None
+06:21:19 | INFO  | utils.py    | ── RunDirectory ──────────────────────────────────
+06:21:19 | INFO  | manager.py  |   cache_dir = /cephyr/users/maelic/Alvis/.cache/stable-pretraining
+06:21:19 | INFO  | manager.py  |   ddp: launch_key=slurm-6781859 rank=0 is_rank_zero=True
+06:21:19 | INFO  | utils.py    | ── RunDirectory: requeue probe ───────────────────
+06:21:19 | INFO  | manager.py  |   SLURM session key   = 6781859
+06:21:19 | INFO  | manager.py  |   SLURM_RESTART_COUNT = 0
+06:21:19 | INFO  | manager.py  |   in_requeue          = False
+06:21:19 | INFO  | utils.py    | ── RunDirectory: fresh ───────────────────────────
+06:21:19 | INFO  | manager.py  |   no user ckpt_path — training from scratch / pretrained backbone.
+06:21:19 | INFO  | manager.py  |   created run_dir = /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/062119/6ab57e804b7f
+06:21:19 | INFO  | manager.py  |   wrote run_meta.json with run_id=6ab57e804b7f
+06:21:19 | INFO  | manager.py  |   SLURM index = /cephyr/users/maelic/Alvis/.cache/stable-pretraining/.slurm_index/6781859 → /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/062119/6ab57e804b7f
+06:21:19 | INFO  | manager.py  |   rank-0 published handoff → /cephyr/users/maelic/Alvis/.cache/stable-pretraining/.rank_handoff/slurm-6781859
+06:21:19 | INFO  | manager.py  |   → future SLURM requeue (SLURM_RESTART_COUNT ≥ 1) for key '6781859' will resume into this directory via the index entry written above.
+06:21:19 | WARN  | manager.py  | ! cache_dir is set but the Trainer was passed as an already-instantiated object. Cannot override default_root_dir cleanly. Consider passing the trainer as a config dict instead.
+06:21:19 | WARN  | manager.py  | ! Hydra run.dir='outputs/2026-06-28/06-10-22' will be ignored for trainer outputs (cache_dir takes precedence).
+06:21:19 | WARN  | manager.py  | ! Hydra sweep.dir='multirun/2026-06-28/06-10-22' will be ignored for trainer outputs (cache_dir takes precedence).
+06:21:19 | INFO  | logger.py   | [RegistryLogger] run_id=6ab57e804b7f run_dir=/cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/062119/6ab57e804b7f — sidecar.json + summary.json + metrics.csv will live here
+06:21:19 | INFO  | utils.py    | ── RegistryLogger ────────────────────────────────
+06:21:19 | INFO  | manager.py  |   run_dir: /cephyr/users/maelic/Alvis/.cache/stable-pretraining/runs/20260628/062119/6ab57e804b7f
+06:21:19 | INFO  | manager.py  |   run_id:  6ab57e804b7f
+06:21:19 | INFO  | utils.py    | ── Wandb ─────────────────────────────────────────
+06:21:19 | INFO  | manager.py  |   fetching previous Wandb runs from wandb
+06:21:19 | INFO  | manager.py  |   found 2 run(s):
+06:21:19 | INFO  | manager.py  |   offline-run-20260628_054648-folding_topcam
+06:21:19 | INFO  | manager.py  |   offline-run-20260628_062118-folding_topcam
+06:21:19 | INFO  | manager.py  |   Found a previous run (wandb/offline-run-20260628_054648-folding_topcam), reusing config
+06:21:19 | ERROR | contextlib.~| 
+================================================================================
+💥 EXCEPTION CAUGHT
+================================================================================
+Type: FileNotFoundError
+Message: [Errno 2] No such file or directory: 'wandb/offline-run-20260628_054648-folding_topcam/files/wandb-config.json'
+================================================================================
+TRACEBACK:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/utils/error_handling.py", line 30, in catch_errors
+    yield
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/utils/error_handling.py", line 72, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning_utilities/core/rank_zero.py", line 42, in wrapped_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1520, in init_and_sync_wandb
+    with open(previous_run / "files/wandb-config.json", "r") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'wandb/offline-run-20260628_054648-folding_topcam/files/wandb-config.json'
+================================================================================
+
+
+================================================================================
+💥 EXCEPTION CAUGHT
+================================================================================
+Type: FileNotFoundError
+Message: [Errno 2] No such file or directory: 'wandb/offline-run-20260628_054648-folding_topcam/files/wandb-config.json'
+================================================================================
+TRACEBACK:
+Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/utils/error_handling.py", line 30, in catch_errors
+    yield
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/utils/error_handling.py", line 72, in wrapper
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning_utilities/core/rank_zero.py", line 42, in wrapped_fn
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1520, in init_and_sync_wandb
+    with open(previous_run / "files/wandb-config.json", "r") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'wandb/offline-run-20260628_054648-folding_topcam/files/wandb-config.json'
+================================================================================
+
+06:21:19 | ERROR | richuru.py  | Exception:
+Traceback (most recent call last):
+
+> File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 261, in <module>
+    run()
+    └ <function run at 0x151ffe7aaac0>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/main.py", line 94, in decorated_main
+    _run_hydra(
+    └ <function _run_hydra at 0x15227458ef20>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 394, in _run_hydra
+    _run_app(
+    └ <function _run_app at 0x15227458efc0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 457, in _run_app
+    run_and_report(
+    └ <function run_and_report at 0x15227458ee80>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 223, in run_and_report
+    raise ex
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 220, in run_and_report
+    return func()
+           └ <function _run_app.<locals>.<lambda> at 0x151ffe7cbba0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/utils.py", line 458, in <lambda>
+    lambda: hydra.run(
+            │     └ <function Hydra.run at 0x15227444e2a0>
+            └ <hydra._internal.hydra.Hydra object at 0x151ffe7a0b90>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/_internal/hydra.py", line 132, in run
+    _ = ret.return_value
+        │   └ <property object at 0x152274558590>
+        └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 260, in return_value
+    raise self._return_value
+          │    └ FileNotFoundError(2, 'No such file or directory')
+          └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/hydra/core/utils.py", line 186, in run_job
+    ret.return_value = task_function(task_cfg)
+    │   │              │             └ {'output_model_name': 'lewm_folding_topcam', 'subdir': 'folding_topcam', 'num_workers': 16, 'train_split': 0.9, 'seed': 3072,...
+    │   │              └ <function run at 0x151ffe7aac00>
+    │   └ <property object at 0x152274558590>
+    └ JobReturn(overrides=['loader.batch_size=512', 'num_workers=16', 'trainer.max_epochs=50', 'wandb.enabled=true', 'optimizer.lr=...
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_lewm.py", line 241, in run
+    manager()
+    └ <stable_pretraining.manager.Manager object at 0x151f96139e20>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1691, in __call__
+    self.init_and_sync_wandb()
+    │    └ <function Manager.init_and_sync_wandb at 0x151f9605ef20>
+    └ <stable_pretraining.manager.Manager object at 0x151f96139e20>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/utils/error_handling.py", line 72, in wrapper
+    return func(*args, **kwargs)
+           │     │       └ {}
+           │     └ (<stable_pretraining.manager.Manager object at 0x151f96139e20>,)
+           └ <function Manager.init_and_sync_wandb at 0x151f9605e3e0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lightning_utilities/core/rank_zero.py", line 42, in wrapped_fn
+    return fn(*args, **kwargs)
+           │   │       └ {}
+           │   └ (<stable_pretraining.manager.Manager object at 0x151f96139e20>,)
+           └ <function Manager.init_and_sync_wandb at 0x151f9605e340>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/stable_pretraining/manager.py", line 1520, in init_and_sync_wandb
+    with open(previous_run / "files/wandb-config.json", "r") as f:
+              └ PosixPath('wandb/offline-run-20260628_054648-folding_topcam')
+
+FileNotFoundError: [Errno 2] No such file or directory: 'wandb/offline-run-20260628_054648-folding_topcam/files/wandb-config.json'
+[1;34mwandb[0m: 
+[1;34mwandb[0m: You can sync this run to the cloud by running:
+[1;34mwandb[0m: [1mwandb sync wandb/offline-run-20260628_062118-folding_topcam[0m

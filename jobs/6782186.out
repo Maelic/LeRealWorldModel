@@ -1,0 +1,106 @@
+This job can be monitored from: https://job.c3se.chalmers.se/alvis/6782186
+============================================================
+  Decoder training — folding JEPA (base cam)
+  HPC_REPO     = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel
+  SRC CKPT     = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam/lewm_folding_topcam_latest_object.ckpt
+  FROZEN COPY  = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam/decoder_src_6782186.ckpt
+  RUN_DIR      = /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam
+  NUM_EPISODES = 60   STEPS = 20000   BATCH = 256
+  EMB_WORKERS  = 16
+  NODE         = alvis4-41   JOB = 6782186
+  GPU          = NVIDIA A100-SXM4-80GB, 81920 MiB
+============================================================
+15:12:47 | INFO  | atomic_chec~| [atomic_save] installed crash-safe checkpoint plugin (write to sibling .tmp + fsync + atomic rename)
+Loaded world model from /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/checkpoints/folding_topcam/decoder_src_6782186.ckpt
+15:12:47 | INFO  | __init__.py | Using video codec: libsvtav1
+15:12:47 | INFO  | __init__.py | Using custom data configuration default-0d82af4f36087119
+15:12:48 | INFO  | __init__.py | Found cached dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-0d82af4f36087119/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+15:12:48 | INFO  | __init__.py | Using custom data configuration default-ee645ac7b62ef42d
+15:12:48 | INFO  | __init__.py | Generating dataset parquet (/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-ee645ac7b62ef42d/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb)
+15:12:48 | INFO  | __init__.py | Downloading and preparing dataset parquet/default to /mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-ee645ac7b62ef42d/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb...
+15:12:48 | INFO  | __init__.py | Downloading took 0.0 min
+15:12:48 | INFO  | __init__.py | Checksum Computation took 0.0 min
+15:12:48 | INFO  | __init__.py | Generating train split
+15:12:49 | INFO  | __init__.py | Unable to verify splits sizes.
+15:12:49 | INFO  | __init__.py | Dataset parquet downloaded and prepared to /mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/datasets/parquet/default-ee645ac7b62ef42d/0.0.0/ec3958b52035e87929642b609b5a781870321434b151a14fbe8fd5a26ff494bb. Subsequent calls will reuse this data.
+Loaded first 60 episodes (120805 frames)
+Pre-computing embeddings for 120805 frames…
+15:21:18 | ERROR | richuru.py  | Exception:
+Traceback (most recent call last):
+
+> File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_jepa_decoder.py", line 693, in <module>
+    main()
+    └ <function main at 0x153a476b02c0>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_jepa_decoder.py", line 476, in main
+    emb_flat = precompute_embeddings_flat(
+               └ <function precompute_embeddings_flat at 0x153a476aa700>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+           │     │       └ {'batch_size': 128, 'num_workers': 16}
+           │     └ (JEPA(
+           │         (encoder): ViTModel(
+           │           (embeddings): ViTEmbeddings(
+           │             (patch_embeddings): ViTPatchEmbeddings(
+           │               (project...
+           └ <function precompute_embeddings_flat at 0x153cbe3bfd80>
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/train_jepa_decoder.py", line 111, in precompute_embeddings_flat
+    for batch in tqdm(loader):
+        │        │    └ <torch.utils.data.dataloader.DataLoader object at 0x153a440fb5c0>
+        │        └ <class 'tqdm.std.tqdm'>
+        └ {'observation.images.left_wrist': tensor([[[[0.2784, 0.2784, 0.2784,  ..., 0.0980, 0.1059, 0.1137],
+                    [0.2706, 0.2784...
+
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/tqdm/std.py", line 1181, in __iter__
+    for obj in iterable:
+        │      └ <torch.utils.data.dataloader.DataLoader object at 0x153a440fb5c0>
+        └ {'observation.images.left_wrist': tensor([[[[0.2784, 0.2784, 0.2784,  ..., 0.0980, 0.1059, 0.1137],
+                    [0.2706, 0.2784...
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 741, in __next__
+    data = self._next_data()
+           │    └ <function _MultiProcessingDataLoaderIter._next_data at 0x153b793c8180>
+           └ <torch.utils.data.dataloader._MultiProcessingDataLoaderIter object at 0x153a476a3ad0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1518, in _next_data
+    return self._process_data(data, worker_id)
+           │    │             │     └ 0
+           │    │             └ <torch._utils.ExceptionWrapper object at 0x153a476a2330>
+           │    └ <function _MultiProcessingDataLoaderIter._process_data at 0x153b793c82c0>
+           └ <torch.utils.data.dataloader._MultiProcessingDataLoaderIter object at 0x153a476a3ad0>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/dataloader.py", line 1586, in _process_data
+    data.reraise()
+    │    └ <function ExceptionWrapper.reraise at 0x153cbe1f4b80>
+    └ <torch._utils.ExceptionWrapper object at 0x153a476a2330>
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/_utils.py", line 775, in reraise
+    raise exception
+          └ FrameTimestampError('Caught FrameTimestampError in DataLoader worker process 0.\nOriginal Traceback (most recent call last):\...
+
+lerobot.datasets.video_utils.FrameTimestampError: Caught FrameTimestampError in DataLoader worker process 0.
+Original Traceback (most recent call last):
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/worker.py", line 358, in _worker_loop
+    data = fetcher.fetch(index)  # type: ignore[possibly-undefined]
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/torch/utils/data/_utils/fetch.py", line 54, in fetch
+    data = [self.dataset[idx] for idx in possibly_batched_index]
+            ~~~~~~~~~~~~^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/lerobot_dataset.py", line 452, in __getitem__
+    return reader.get_item(idx)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 271, in get_item
+    video_frames = self._query_videos(query_timestamps, ep_idx)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/dataset_reader.py", line 244, in _query_videos
+    frames = decode_video_frames(video_path, shifted_query_ts, self._tolerance_s, self._video_backend)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 154, in decode_video_frames
+    return decode_video_frames_torchvision(video_path, timestamps, tolerance_s, backend)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/.venv/lib/python3.12/site-packages/lerobot/datasets/video_utils.py", line 233, in decode_video_frames_torchvision
+    raise FrameTimestampError(
+lerobot.datasets.video_utils.FrameTimestampError: One or several query timestamps unexpectedly violate the tolerance (tensor([0.0667]) > tolerance_s=0.04). It means that the closest frame that can be loaded from the video is too far away in time. This might be due to synchronization issues with timestamps during data collection. To be safe, we advise to ignore this item during training.
+queried timestamps: tensor([617.6000])
+loaded timestamps: tensor([617.5333])
+video: /mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface/lerobot/lerobot/high_quality_folding/videos/observation.images.left_wrist/chunk-000/file-000.mp4
+backend: pyav
+
