@@ -220,6 +220,7 @@ def run(cfg):
 
     object_dump_callback = ModelObjectCallBack(
         dirpath=run_dir, filename=cfg.output_model_name, epoch_interval=1,
+        step_interval=cfg.get("ckpt_step_interval", 0),
     )
 
     trainer = pl.Trainer(

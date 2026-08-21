@@ -71,11 +71,32 @@ def get_column_normalizer(dataset, source: str, target: str):
 class ModelObjectCallBack(Callback):
     """Callback to pickle model object after each epoch."""
 
-    def __init__(self, dirpath, filename="model_object", epoch_interval: int = 1):
+    def __init__(self, dirpath, filename="model_object", epoch_interval: int = 1,
+                 step_interval: int = 0):
         super().__init__()
         self.dirpath = Path(dirpath)
         self.filename = filename
         self.epoch_interval = epoch_interval
+        # step_interval > 0 → also pickle a rolling 'latest' object every N optimizer
+        # steps, so a usable checkpoint exists long before the (long) epoch ends.
+        self.step_interval = step_interval
+
+    def on_train_batch_end(self, trainer, pl_module, outputs, batch, batch_idx):
+        if self.step_interval <= 0 or not trainer.is_global_zero:
+            return
+        step = trainer.global_step
+        if step == 0 or step % self.step_interval != 0:
+            return
+
+        model_bwd = getattr(pl_module, "model_bwd", None)
+        if model_bwd is not None:
+            self._dump_model(model_bwd, self.dirpath / f"{self.filename}_latest_bwd_object.ckpt")
+
+        model_fwd = getattr(pl_module, "model_fwd", None) or getattr(pl_module, "model", None)
+        if model_fwd is not None:
+            suffix = "fwd_object" if model_bwd is not None else "object"
+            self._dump_model(model_fwd, self.dirpath / f"{self.filename}_latest_{suffix}.ckpt")
+            print(f"[ModelObjectCallBack] saved rolling checkpoint at step {step}", flush=True)
 
     def on_train_epoch_end(self, trainer, pl_module):
         super().on_train_epoch_end(trainer, pl_module)
