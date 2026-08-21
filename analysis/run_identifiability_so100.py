@@ -114,7 +114,7 @@ def sample_trajectories(
     rng = np.random.default_rng(seed)
     transform = make_transform()
 
-    lrds = LeRobotDataset(repo_id=repo_id, root=root)
+    lrds = LeRobotDataset(repo_id=repo_id, root=root, video_backend="pyav")
     meta = lrds.meta
     fps  = meta.fps
 
@@ -331,7 +331,14 @@ def main():
     parser.add_argument("--device",      default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--output",      default="so100_identifiability_results.txt")
     parser.add_argument("--seed",        type=int,   default=42)
+    parser.add_argument("--history-size", type=int, default=3)
+    parser.add_argument("--action-dim", type=int, default=6)
     args = parser.parse_args()
+    global HISTORY_SIZE, ACTION_DIM, EFFECTIVE_ACT, JOINT_NAMES
+    HISTORY_SIZE = args.history_size
+    ACTION_DIM = args.action_dim
+    EFFECTIVE_ACT = FRAMESKIP * ACTION_DIM
+    JOINT_NAMES = [f"joint_{i+1}" for i in range(ACTION_DIM)]
 
     print(f"\n{'='*60}")
     print("  LeWM Identifiability Analysis — SO-100 pickplace")
@@ -407,7 +414,7 @@ def main():
 
     print("[3/8] Probe generalization (episode split)...")
     # Use per-episode proprios normalized by the same scaler
-    proprios_norm = scaler.transform(proprios.reshape(-1, 6)).reshape(proprios.shape)
+    proprios_norm = scaler.transform(proprios.reshape(-1, proprios.shape[-1])).reshape(proprios.shape)
     pg = probe_generalization(z, proprios_norm, train_frac=0.8)
 
     print("[4/8] Action diversity...")
