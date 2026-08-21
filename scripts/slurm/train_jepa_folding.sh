@@ -43,15 +43,19 @@
 #SBATCH -A naiss2026-4-349 -p alvis
 #SBATCH -N 1 --gpus-per-node=A100fat:1     # 80 GB A100. 40 GB: A100:1 | H100 cluster: adjust gres
 #SBATCH -c 16                              # data loading is video-decode bound — give it cores
-#SBATCH -t 2-00:00:00
+#SBATCH -t 1-00:00:00
 #SBATCH -e /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/jobs/%J.err
 #SBATCH -o /mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel/jobs/%J.out
 
 set -euo pipefail
 
+module purge > /dev/null 2>&1
+
+ml Python/3.12.3-GCCcore-13.3.0 CUDA/12.6.0 FFmpeg/7.0.2-GCCcore-13.3.0
+
 # ── Paths / defaults ──────────────────────────────────────────────────────────
 HPC_REPO="${HPC_REPO:-/mimer/NOBACKUP/groups/naiss2026-4-349/LeRealWorldModel}"
-export HF_HOME="${HF_HOME:-/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface}"
+export HF_HOME="/mimer/NOBACKUP/groups/naiss2026-4-349/.cache/huggingface"
 
 CONFIG="${CONFIG:-lewm_folding_topcam}"
 BATCH_SIZE="${BATCH_SIZE:-256}"
@@ -90,9 +94,9 @@ cd "${HPC_REPO}"
 OVERRIDES=(
   "--config-name" "$CONFIG"
   "loader.batch_size=${BATCH_SIZE}"
-  "num_workers=${SLURM_CPUS_PER_TASK:-16}"
+  "num_workers=8"
   "trainer.max_epochs=${EPOCHS}"
-  "wandb.enabled=true"
+  "wandb.enabled=false"
 )
 [[ -n "$EPISODES" ]] && OVERRIDES+=("data.dataset.episodes=${EPISODES}")
 [[ -n "$LR" ]]       && OVERRIDES+=("optimizer.lr=${LR}")

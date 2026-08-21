@@ -94,7 +94,7 @@ def precompute_embeddings_flat(
     image_key: str,
     img_preprocessor,
     batch_size: int = 128,
-    num_workers: int = 4,
+    num_workers: int = 8,
 ) -> torch.Tensor:
     """Encode every frame → flat (N_total, D) tensor on CPU."""
     world_model.eval()
@@ -385,7 +385,15 @@ def parse_args() -> argparse.Namespace:
                    help="Directory to save decoder.pt and visualizations")
     p.add_argument("--repo-id", default="maelicneau/stack_cubes")
     p.add_argument("--data-root",
-                   default="leWorldRobot/datasets/stack_cubes")
+                   default="leWorldRobot/datasets/stack_cubes",
+                   help="Local dataset root. Pass empty ('') to read from the HF cache.")
+    p.add_argument("--num-episodes", type=int, default=0,
+                   help="If >0, only load the first N episodes (faster embedding "
+                        "pre-pass). 0 → full dataset.")
+    p.add_argument("--emb-workers", type=int, default=8,
+                   help="DataLoader workers for the embedding pre-pass (decode-bound).")
+    p.add_argument("--emb-batch-size", type=int, default=128,
+                   help="Batch size for the embedding pre-pass.")
     p.add_argument("--image-key", default="observation.images.up")
     p.add_argument("--encoder-scale", default="tiny")
     p.add_argument("--embed-dim", type=int, default=192)
@@ -420,21 +428,26 @@ def main() -> None:
     run_dir.mkdir(parents=True, exist_ok=True)
 
     # ── Load frozen world model ──────────────────────────────────────────────
-    jepa_cfg = JEPAConfig(
-        encoder_scale=args.encoder_scale,
-        embed_dim=args.embed_dim,
-        history_size=args.history_size,
-        img_size=args.img_size,
-        patch_size=args.patch_size,
-        image_keys=[args.image_key],
-    )
-    world_model = build_world_model(jepa_cfg, device)
     wm_path = Path(args.world_model_path).expanduser()
     loaded = torch.load(wm_path, map_location=device, weights_only=False)
     if isinstance(loaded, JEPA):
-        world_model.load_state_dict(loaded.state_dict())
+        # Pickled full model — use it as-is so action_dim / dims always match the
+        # checkpoint (folding is 16-DOF × frameskip → 80-dim action, not SO-100's 30).
+        world_model = loaded.to(device)
     elif isinstance(loaded, dict):
+        # Bare state_dict — rebuild the architecture from CLI args, then load.
+        jepa_cfg = JEPAConfig(
+            encoder_scale=args.encoder_scale,
+            embed_dim=args.embed_dim,
+            history_size=args.history_size,
+            img_size=args.img_size,
+            patch_size=args.patch_size,
+            image_keys=[args.image_key],
+        )
+        world_model = build_world_model(jepa_cfg, device)
         world_model.load_state_dict(loaded)
+    else:
+        raise TypeError(f"Unexpected checkpoint type {type(loaded)} at {wm_path}")
     world_model.eval()
     for p in world_model.parameters():
         p.requires_grad_(False)
@@ -442,18 +455,41 @@ def main() -> None:
 
     # ── Dataset ──────────────────────────────────────────────────────────────
     from lerobot.datasets.lerobot_dataset import LeRobotDataset
+    data_root = Path(args.data_root).expanduser() if args.data_root else None
+    episodes = list(range(args.num_episodes)) if args.num_episodes > 0 else None
     lerobot_ds = LeRobotDataset(
         repo_id=args.repo_id,
-        root=Path(args.data_root).expanduser(),
+        root=data_root,
+        episodes=episodes,
         tolerance_s=0.04,
+        # AV1-encoded videos need pyav (system FFmpeg torchcodec links has no AV1
+        # decoder). Must match the backend used in lerobot_adapter at WM-train time.
+        video_backend="pyav",
     )
+    if episodes is not None:
+        print(f"Loaded first {args.num_episodes} episodes ({len(lerobot_ds)} frames)", flush=True)
+
+    # Decode only the camera we use. The folding dataset's wrist cameras are
+    # symlinks to the base video with mismatched timestamps; the raw
+    # LeRobotDataset.__getitem__ otherwise decodes ALL camera keys → either a
+    # FrameTimestampError or 3× wasted decode work. video_keys is derived from
+    # meta.features, and the reader shares this meta object, so dropping the
+    # unused video features restricts decoding to args.image_key only.
+    dropped = [k for k, ft in lerobot_ds.meta.features.items()
+               if ft["dtype"] == "video" and k != args.image_key]
+    for k in dropped:
+        del lerobot_ds.meta.features[k]
+    if dropped:
+        print(f"Decoding only '{args.image_key}'; dropped video keys: {dropped}", flush=True)
+
     img_preprocessor = get_img_preprocessor(
         source="pixels", target="pixels", img_size=args.img_size
     )
 
     # ── Pre-compute embeddings ────────────────────────────────────────────────
     emb_flat = precompute_embeddings_flat(
-        world_model, lerobot_ds, device, args.image_key, img_preprocessor
+        world_model, lerobot_ds, device, args.image_key, img_preprocessor,
+        batch_size=args.emb_batch_size, num_workers=args.emb_workers,
     )
     print(f"Embeddings shape: {emb_flat.shape}")  # (N, 192)
 
